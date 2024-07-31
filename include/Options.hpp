@@ -10,9 +10,8 @@
 #define OPT_FIL_BORNIER "nofilbornier"
 #define OPT_BRIGNESS "bonoff"
 
-class Options
-{
-public:
+class Options {
+   public:
     Options();
     ~Options();
     void saveAllOptions();
@@ -21,13 +20,13 @@ public:
     void setMaxTry(int maxtry);
     void setBrigness(bool on);
     void setFil(int file);
-    
+
     long getMaxTimeInMin();
     String getCode();
     int getMaxTry();
     int getFil();
 
-private:
+   private:
     Preferences *opts;
     long maxTimeInMin = 60;
     String code = "1234567890";

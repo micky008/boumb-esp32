@@ -7,25 +7,19 @@
 #define LINE_UP 0
 #define LINE_DOWN 1
 
-class MyLCD
-{
-public:
+class MyLCD {
+   public:
     MyLCD();
     ~MyLCD();
     void initLCD();
     void affiche(String lineStr, int line);
+    void append(String lineStr, int posCur, int line);
+    void posCur(int y, int x);
 
-private:
+   private:
     LiquidCrystal_I2C *internLCD;
-    byte skullHead[8] = {
-        0b00000,
-        0b01110,
-        0b10101,
-        0b11111,
-        0b01010,
-        0b01010,
-        0b01110,
-        0b00000};
+    byte skullHead[8] = {0b00000, 0b01110, 0b10101, 0b11111,
+                         0b01010, 0b01010, 0b01110, 0b00000};
 };
 
 #endif
