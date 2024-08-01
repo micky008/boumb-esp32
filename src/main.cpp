@@ -7,8 +7,6 @@
 #include "LCD.hpp"
 #include "Options.hpp"
 
-#define VERSION 2.0
-
 #define BORNIER_ETAT_ALL_FILS_OK 0
 #define BORNIER_ETAT_WRONG_FIL 1
 #define BORNIER_ETAT_GOOD_FIL 2
@@ -34,7 +32,7 @@ void setup() {
     while (!runPlay) {
         String res = c.theChoice("Jouer ?", "1-oui 2-non: ");
         if (res.equals("2")) {
-            Configuration conf(options);
+            Configuration conf(lcd, options);
             conf.run();
         } else {
             runPlay = true;

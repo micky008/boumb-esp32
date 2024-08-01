@@ -26,14 +26,14 @@ void Options::saveAllOptions() {
     opts->putBool(OPT_BRIGNESS, brignessOnOff);
 }
 
-void Options::setMaxTime(long maxtime) { maxTimeInMin = maxtime; }
+void Options::setMaxTime(int maxtime) { maxTimeInMin = maxtime; }
 void Options::setCode(String code) { this->code = code; }
 void Options::setMaxTry(int maxtry) { this->maxTry = maxtry; }
 void Options::setBrigness(bool on) { brignessOnOff = on; }
 void Options::setFil(int fil) { this->fil = fil; }
 
 Options::~Options() { delete opts; }
-long Options::getMaxTimeInMin() { return maxTimeInMin; }
+int Options::getMaxTimeInMin() { return maxTimeInMin; }
 String Options::getCode() { return code; }
 int Options::getMaxTry() { return maxTry; }
 int Options::getFil() { return fil; }

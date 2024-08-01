@@ -25,4 +25,12 @@ void MyLCD::append(String lineStr, int posCur, int line) {
 
 void MyLCD::posCur(int y, int x) { internLCD->setCursor(y, x); }
 
+void MyLCD::setBrightnessOn(bool on) {
+    if (on) {
+        internLCD->backlight();
+    } else {
+        internLCD->noBacklight();
+    }
+}
+
 MyLCD::~MyLCD() { delete internLCD; }
