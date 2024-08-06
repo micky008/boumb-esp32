@@ -17,11 +17,11 @@ bool Configuration::run() {
         res = firstEcran.theChoice("Max. essais:", "");
         if (res.indexOf("A") > -1 || res.indexOf("B") > -1 ||
             res.indexOf("C") > -1 || res.indexOf("F") > -1) {
-                lcd.append("PAS DE LETTRE!", 0, LINE_DOWN);
-                delay(3000);
-                return true;
-            }
-            options.setMaxTry(res.toInt());
+            lcd.append("PAS DE LETTRE!", 0, LINE_DOWN);
+            delay(3000);
+            return true;
+        }
+        options.setMaxTry(res.toInt());
     } else if (res.equals("4")) {
         lcd.affiche("VERSION: ", LINE_UP);
         String ver = "";
@@ -30,11 +30,11 @@ bool Configuration::run() {
         delay(3000);
     } else if (res.equals("5")) {
         res = firstEcran.theChoice("Brightness ?", "1-On/2-off: ");
-        if (res.equals("1")){
-            lcd.setBrightnessOn(true);
-        }else {
-            lcd.setBrightnessOn(false);
-        }
+        lcd.setBrightnessOn(res.equals("1"));
+        options.setBrigness(res.equals("1"));
+    } else if (res.equals("5")) {
+        res = firstEcran.theChoice("LED ?", "1-On/2-off: ");
+        options.setLedStatus(res.equals("1"));
     } else {
         return false;
     }

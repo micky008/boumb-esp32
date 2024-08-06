@@ -11,6 +11,7 @@
 #define OPT_MAX_TRY "maxtry"
 #define OPT_FIL_BORNIER "nofilbornier"
 #define OPT_BRIGNESS "bonoff"
+#define OPT_LED_ON_OFF "ledonoff"
 
 class Options {
    public:
@@ -22,11 +23,14 @@ class Options {
     void setMaxTry(int maxtry);
     void setBrigness(bool on);
     void setFil(int file);
+    void setLedStatus(bool on);
 
     int getMaxTimeInMin();
     String getCode();
     int getMaxTry();
     int getFil();
+    bool getLedStatus();
+
 
    private:
     Preferences *opts;
@@ -35,6 +39,7 @@ class Options {
     int maxTry = 3;
     bool brignessOnOff = true;
     int fil = 2;
+    bool ledOn = true;
 };
 
 #endif
