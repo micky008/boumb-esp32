@@ -22,6 +22,9 @@ void Bornier::init() {
 }
 
 bool Bornier::isCut() {
+    if (filCut > -1) {
+        return true;
+    } 
     if (digitalRead(27) == LOW) {
         filCut = 1;
         return true;

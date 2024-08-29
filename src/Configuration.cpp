@@ -17,16 +17,16 @@ bool Configuration::run() {
         res = firstEcran.theChoice("Max. essais:", "");
         if (res.indexOf("A") > -1 || res.indexOf("B") > -1 ||
             res.indexOf("C") > -1 || res.indexOf("F") > -1) {
-            lcd.append("PAS DE LETTRE!", 0, LINE_DOWN);
+            lcd.append("PAS DE LETTRE!", 0, LCD_LINE_DOWN);
             delay(3000);
             return true;
         }
         options.setMaxTry(res.toInt());
     } else if (res.equals("4")) {
-        lcd.affiche("VERSION: ", LINE_UP);
+        lcd.affiche("VERSION: ", LCD_LINE_UP);
         String ver = "";
         ver += VERSION;
-        lcd.affiche(ver, LINE_DOWN);
+        lcd.affiche(ver, LCD_LINE_DOWN);
         delay(3000);
     } else if (res.equals("5")) {
         res = firstEcran.theChoice("Brightness ?", "1-On/2-off: ");

@@ -12,7 +12,7 @@ class Bornier {
         bool isGoodFil();
     private:
         int goodFil;
-        int filCut;
+        int filCut = -1;
 };
 
 

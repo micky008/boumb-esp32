@@ -4,8 +4,8 @@
 #include <Arduino.h>
 #include <LiquidCrystal_I2C.h>
 
-#define LINE_UP 0
-#define LINE_DOWN 1
+#define LCD_LINE_UP 0
+#define LCD_LINE_DOWN 1
 
 class MyLCD {
    public:
