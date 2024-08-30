@@ -12,8 +12,8 @@ class Configuration {
     bool run();
 
    private:
-    Options &options;
     MyLCD &lcd;
+    Options &options;
 };
 
 #endif

@@ -8,7 +8,7 @@ void MyLCD::initLCD() {
     // 0 = id entry //utiliser lcd.setCursor(0, 0);
     // lcd.write(0); pour ecrire le char
     internLCD->createChar(0, skullHead);
-    affiche("Hello !", LINE_UP);
+    affiche("Hello !", LCD_LINE_UP);
     delay(1000);
     internLCD->clear();
 }
