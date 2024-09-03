@@ -2,21 +2,13 @@
 #define _MY_OPTIONS__
 
 #include <Arduino.h>
-#include <Preferences.h>
+#include <EEPROM.h>
 
 #define VERSION 2.0
-
-#define OPT_MAX_TIME "maxtime"
-#define OPT_CODE "optcode"
-#define OPT_MAX_TRY "maxtry"
-#define OPT_FIL_BORNIER "nofilbornier"
-#define OPT_BRIGNESS "bonoff"
-#define OPT_LED_ON_OFF "ledonoff"
 
 class Options {
    public:
     Options();
-    ~Options();
     void saveAllOptions();
     void setMaxTime(int maxtime);
     void setCode(String code);
@@ -33,13 +25,13 @@ class Options {
 
 
    private:
-    Preferences *opts;
+    String code = "123456";
     int maxTimeInMin = 60;
-    String code = "1234567890";
     int maxTry = 3;
     bool brignessOnOff = true;
     int fil = 2;
     bool ledOn = true;
+    int address = 0;
 };
 
 #endif

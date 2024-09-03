@@ -38,5 +38,6 @@ bool Configuration::run() {
     } else {
         return false;
     }
+    options.saveAllOptions();
     return true;
 }

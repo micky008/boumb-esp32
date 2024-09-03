@@ -1,35 +1,47 @@
 #include "Options.hpp"
 
+/**
+ *     String code = "123456";
+    int maxTimeInMin = 60;
+    int maxTry = 3;
+    bool brignessOnOff = true;
+    int fil = 2;
+    bool ledOn = true;
+ */
+
 Options::Options() {
-    opts = new Preferences();
-    opts->begin("myPrefs", false);
-    if (opts->isKey(OPT_BRIGNESS) == false) {
-        opts->putLong(OPT_MAX_TIME, maxTimeInMin);
-        opts->putString(OPT_CODE, code);
-        opts->putInt(OPT_MAX_TRY, maxTry);
-        opts->putInt(OPT_FIL_BORNIER, fil);
-        opts->putBool(OPT_BRIGNESS, brignessOnOff);
-        opts->putBool(OPT_LED_ON_OFF, ledOn);
-    } else {
-        maxTimeInMin = opts->getLong(OPT_MAX_TIME);
-        code = opts->getString(OPT_CODE);
-        maxTry = opts->getInt(OPT_MAX_TRY);
-        fil = opts->getInt(OPT_FIL_BORNIER);
-        brignessOnOff = opts->getBool(OPT_BRIGNESS);
-        ledOn = opts->getBool(OPT_LED_ON_OFF);
+    address = 0;
+    EEPROM.begin(20000);
+    String res = EEPROM.readString(0);
+    if (res == NULL || res.length() == 0) {
+        address += EEPROM.writeString(this->address, this->code);
+        address += EEPROM.writeInt(address, maxTimeInMin);
+        address += EEPROM.writeInt(address, maxTry);
+        address += EEPROM.writeBool(address, brignessOnOff);
+        address += EEPROM.writeInt(address, fil);
+        address += EEPROM.writeBool(address, ledOn);
+        return;
     }
+    code = res;
+    address += strlen(code.c_str());
+    maxTimeInMin = EEPROM.readInt(address);
+    address += sizeof(maxTimeInMin);
+    maxTry = EEPROM.readInt(address);
+    address += sizeof(maxTry);
+    brignessOnOff = EEPROM.readBool(address);
+    address += sizeof(brignessOnOff);
+    fil = EEPROM.readInt(address);
+    ledOn = EEPROM.readBool(address);
 }
 
-
-Options::~Options() { delete opts; }
-
 void Options::saveAllOptions() {
-    opts->putLong(OPT_MAX_TIME, maxTimeInMin);
-    opts->putString(OPT_CODE, code);
-    opts->putInt(OPT_MAX_TRY, maxTry);
-    opts->putInt(OPT_FIL_BORNIER, fil);
-    opts->putBool(OPT_BRIGNESS, brignessOnOff);
-    opts->putBool(OPT_LED_ON_OFF, ledOn);
+    address = 0;
+    address += EEPROM.writeString(this->address, this->code);
+    address += EEPROM.writeInt(address, maxTimeInMin);
+    address += EEPROM.writeInt(address, maxTry);
+    address += EEPROM.writeBool(address, brignessOnOff);
+    address += EEPROM.writeInt(address, fil);
+    address += EEPROM.writeBool(address, ledOn);
 }
 
 void Options::setMaxTime(int maxtime) { maxTimeInMin = maxtime; }
