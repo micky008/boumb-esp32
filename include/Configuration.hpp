@@ -11,7 +11,7 @@ class Configuration {
     Configuration(MyLCD &lcd, Options &opts);
     bool run();
 
-   private:
+   protected:
     MyLCD &lcd;
     Options &options;
 };

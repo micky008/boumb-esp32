@@ -5,6 +5,7 @@
 Choice::Choice(MyLCD& lcd) : lcd(lcd) {}
 
 String Choice::theChoice(String lineUp, String lineDown) {
+    lcd.clearAllScreen();
     Keyboard::resetALLKeyboardState();
     lcd.affiche(lineUp, LCD_LINE_UP);
     lcd.affiche(lineDown, LCD_LINE_DOWN);

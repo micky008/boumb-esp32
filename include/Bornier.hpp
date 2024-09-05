@@ -5,11 +5,12 @@
 
 class Bornier {
     public:
-    Bornier();
-    ~Bornier();
+        Bornier();
         void init();
         bool isCut();
         bool isGoodFil();
+        void setFil(int fil);
+        int getFil();
     private:
         int goodFil;
         int filCut = -1;

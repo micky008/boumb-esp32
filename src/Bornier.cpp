@@ -1,24 +1,33 @@
 #include "Bornier.hpp"
 
 Bornier::Bornier() {
-    goodFil = (int)random(1, 5);
-    pinMode(25, INPUT_PULLUP);
-    pinMode(26, INPUT_PULLUP);
-    pinMode(33, INPUT_PULLUP);
-    pinMode(32, INPUT_PULLUP);
+    
+    pinMode(25, OUTPUT);
+    pinMode(26, OUTPUT);
+    pinMode(33, OUTPUT);
+    pinMode(32, OUTPUT);
     pinMode(27, INPUT_PULLDOWN);
     pinMode(14, INPUT_PULLDOWN);
     pinMode(13, INPUT_PULLDOWN);
     pinMode(12, INPUT_PULLDOWN);
 }
-
-Bornier::~Bornier() {}
-
 void Bornier::init() {
     digitalWrite(25, HIGH);
     digitalWrite(26, HIGH);
     digitalWrite(33, HIGH);
     digitalWrite(32, HIGH);
+}
+
+void Bornier::setFil(int fil){
+    if (fil == -1){
+        goodFil = (int)random(1, 5);
+    } else {
+        goodFil = fil;
+    }
+}
+
+int Bornier::getFil(){
+    return goodFil;
 }
 
 bool Bornier::isCut() {

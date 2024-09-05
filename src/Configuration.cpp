@@ -4,14 +4,14 @@ Configuration::Configuration(MyLCD &lcd, Options &opts)
     : lcd(lcd), options(opts) {}
 
 bool Configuration::run() {
+    lcd.clearAllScreen();
     Choice firstEcran(lcd);
-    String res = firstEcran.theChoice("Num. options", "(1-6) : ");
+    String res = firstEcran.theChoice("Num. options", "(1-7) : ");
     if (res.equals("1")) {
-    } else if (res.equals("1")) {
         res = firstEcran.theChoice("Max time", "(in min): ");
         options.setMaxTime(res.toInt());
     } else if (res.equals("2")) {
-        res = firstEcran.theChoice("Code-6char.max:", " ");
+        res = firstEcran.theChoice("Code-6char.max:", "");
         options.setCode(res);
     } else if (res.equals("3")) {
         res = firstEcran.theChoice("Max. essais:", "");
@@ -23,6 +23,7 @@ bool Configuration::run() {
         }
         options.setMaxTry(res.toInt());
     } else if (res.equals("4")) {
+        lcd.clearAllScreen();
         lcd.affiche("VERSION: ", LCD_LINE_UP);
         String ver = "";
         ver += VERSION;
@@ -32,9 +33,23 @@ bool Configuration::run() {
         res = firstEcran.theChoice("Brightness ?", "1-On/2-off: ");
         lcd.setBrightnessOn(res.equals("1"));
         options.setBrigness(res.equals("1"));
-    } else if (res.equals("5")) {
+    } else if (res.equals("6")) {
         res = firstEcran.theChoice("LED ?", "1-On/2-off: ");
         options.setLedStatus(res.equals("1"));
+    }else if (res.equals("7")) {
+        res = firstEcran.theChoice("no FIL (1-4)?", "");
+        int toint = -1;
+        if (res.charAt(0) == 'A'){
+          toint  = -1;
+        }else {
+            toint = res.toInt();
+        }
+        if (toint < 1 && toint > 4){
+            lcd.affiche("JUSTE 1-4-A!", LCD_LINE_DOWN);
+            delay(3000);
+            return true;
+        }
+        options.setFil(toint);
     } else {
         return false;
     }
