@@ -10,16 +10,14 @@
  */
 
 Options::Options() {
+    initArduino() ;
     address = 0;
-    EEPROM.begin(20000);
+    if (!EEPROM.begin(128)){
+        Serial2.printf("eeprom feild");
+    }
     String res = EEPROM.readString(0);
     if (res == NULL || res.length() == 0) {
-        address += EEPROM.writeString(this->address, this->code);
-        address += EEPROM.writeInt(address, maxTimeInMin);
-        address += EEPROM.writeInt(address, maxTry);
-        address += EEPROM.writeBool(address, brignessOnOff);
-        address += EEPROM.writeInt(address, fil);
-        address += EEPROM.writeBool(address, ledOn);
+        this->saveAllOptions();
         return;
     }
     code = res;
@@ -32,6 +30,7 @@ Options::Options() {
     address += sizeof(brignessOnOff);
     fil = EEPROM.readInt(address);
     ledOn = EEPROM.readBool(address);
+    Serial.printf("fil=%d\n",fil);
 }
 
 void Options::saveAllOptions() {
@@ -42,6 +41,7 @@ void Options::saveAllOptions() {
     address += EEPROM.writeBool(address, brignessOnOff);
     address += EEPROM.writeInt(address, fil);
     address += EEPROM.writeBool(address, ledOn);
+    EEPROM.commit();
 }
 
 void Options::setMaxTime(int maxtime) { maxTimeInMin = maxtime; }

@@ -1,6 +1,6 @@
 #include "LCD.hpp"
 
-MyLCD::MyLCD() { internLCD = new LiquidCrystal_I2C(0x27, 16, 2); }
+MyLCD::MyLCD() { internLCD = new LiquidCrystal_I2C(0x27, NBCOL, NBROW); }
 
 void MyLCD::initLCD() {
     internLCD->init();
@@ -28,9 +28,30 @@ void MyLCD::posCur(int y, int x) { internLCD->setCursor(y, x); }
 void MyLCD::setBrightnessOn(bool on) {
     if (on) {
         internLCD->backlight();
-    } else {
+    }
+    else {
         internLCD->noBacklight();
     }
+}
+
+void MyLCD::resetLine(int line) {
+    internLCD->setCursor(0, line);
+    char lineChar[NBCOL];
+    memset(lineChar, ' ', NBCOL);
+    internLCD->printstr(lineChar);
+    internLCD->setCursor(line, 0);
+}
+
+void MyLCD::resetLineAfterPosition(int pos,int line) {
+    internLCD->setCursor(pos, line);
+    char lineChar[NBCOL-pos];
+    memset(lineChar, ' ', NBCOL-pos);
+    internLCD->printstr(lineChar);
+}
+
+
+void MyLCD::clearAllScreen() {
+    internLCD->clear();
 }
 
 MyLCD::~MyLCD() { delete internLCD; }

@@ -6,12 +6,18 @@
 #include "Keyboard.hpp"
 #include "LCD.hpp"
 #include "Options.hpp"
+#include <HardwareSerial.h>
+
+#define RXD2 16
+#define TXD2 17
 
 #define BORNIER_ETAT_ALL_FILS_OK 0
 #define BORNIER_ETAT_WRONG_FIL 1
 #define BORNIER_ETAT_GOOD_FIL 2
 
-Options options;
+HardwareSerial MySerial(1);
+
+//Options options;
 MyLCD lcd;
 Bornier bornier;
 
@@ -20,52 +26,61 @@ int bornierEtat = BORNIER_ETAT_ALL_FILS_OK;
 int restant_time = 0; //in millis
 int diminue_time = 1000; //in milli =>  1s
 bool runPlay = false;
-int maxTryRestant;
+int maxTryRestant = 3;
 
-TaskHandle_t Task1;
+TaskHandle_t Task1 = NULL;
 
 void core0(void* parameter);
 
 void BOOM() {
     //BOOM 
     //declancher petard
+    digitalWrite(2, HIGH);
+    delayMicroseconds(1000);
+    digitalWrite(2, LOW);
     ESP.restart();
 }
 
 
 void setup() {
+
+    Serial.begin(115200);
+
     bornierEtat = BORNIER_ETAT_ALL_FILS_OK;
-    Serial1.begin(9600);
+    MySerial.begin(9600, SERIAL_8N1, RXD2, TXD2);
     lcd.initLCD();
-    Keyboard::resetKeyboardState();
-    xTaskCreatePinnedToCore(core0, "Task1", 10000, NULL, 0, &Task1, 0);
+    Keyboard::resetALLKeyboardState();
+    xTaskCreatePinnedToCore(core0, "core0", 10000, NULL, 0, &Task1, 0);
     bornier.init();
     Choice c(lcd);
     while (!runPlay) {
         String res = c.theChoice("Jouer ?", "1-oui 2-non: ");
         if (res.equals("2")) {
-            Configuration conf(lcd, options);
-            conf.run();
+            //Configuration conf(lcd, NULL);//options);
+            //conf.run();
         }
         else {
             runPlay = true;
         }
     }
-    restant_time = options.getMaxTimeInMin() * 60000;
-    maxTryRestant = options.getMaxTry();
+    lcd.clearAllScreen();
+    restant_time = 600000;
+    // restant_time = options.getMaxTimeInMin() * 60000;
+    // maxTryRestant = options.getMaxTry();
 }
 
+char temps[NBCOL];
+
 void loop() {
+    memset(temps, 0, NBCOL);
     int x = restant_time / 1000;
     int seconds = x % 60;
     x /= 60;
     int minutes = x % 60;
     x /= 60;
     int hours = x % 24;
-    String h = hours < 10 ? "0" + hours : "" + hours;
-    String min = minutes < 10 ? "0" + minutes : "" + minutes;
-    String sec = seconds < 10 ? "0" + seconds : "" + seconds;
-    lcd.affiche("Temps: " + h + ":" + min + ":" + sec, LCD_LINE_UP);
+    sprintf(temps, "Temps: %02d:%02d:%02d", hours, minutes, seconds);
+    lcd.affiche(String(temps), LCD_LINE_UP);
 
     if (restant_time <= 0) {
         BOOM();
@@ -88,19 +103,27 @@ void loop() {
             codeLine += "*";
         }
     }
+
     lcd.affiche(codeLine, LCD_LINE_DOWN);
     if (maxTryRestant == 0) {
         BOOM();
     }
     if (Keyboard::isKbBufferHaveEnterPressed) {
-        if (Keyboard::kbBufferCode.equals(options.getCode())) {
+        //if (Keyboard::kbBufferCode.equals(options.getCode())) {
+        if (Keyboard::kbBufferCode.equals("123456")) {
             Choice c(lcd);
             c.theChoice("BOMBE Desactivee", "press to restart");
             ESP.restart();
         }
         else {
             maxTryRestant--;
+            Keyboard::resetALLKeyboardState();
+            lcd.resetLine(LCD_LINE_DOWN);
         }
+    }
+    if (Keyboard::isKbCorrectionPresed) {
+        lcd.resetLine(LCD_LINE_DOWN);
+        Keyboard::resetCorrectionKeyboardState();
     }
     delayMicroseconds(diminue_time);
 }
@@ -116,37 +139,43 @@ void core0(void* parameter) {
                 if (restant_time <= 0) {
                     restant_time = 0;
                 }
+
             }
         }
-        if (bornierEtat == BORNIER_ETAT_ALL_FILS_OK && bornier.isCut()) {
-            if (bornier.isGoodFil()) {
-                bornierEtat = BORNIER_ETAT_GOOD_FIL;
-            }
-            else {
-                bornierEtat = BORNIER_ETAT_WRONG_FIL;
-            }
-            return;
-        }
+        // if (bornierEtat == BORNIER_ETAT_ALL_FILS_OK && bornier.isCut()) {
+        //     if (bornier.isGoodFil()) {
+        //         bornierEtat = BORNIER_ETAT_GOOD_FIL;
+        //     }
+        //     else {
+        //         bornierEtat = BORNIER_ETAT_WRONG_FIL;
+        //     }
+        //     break;
+        // }
         if (!Keyboard::isKbBufferHaveEnterPressed) {
-            int mychar = Serial1.read();
+            int mychar = MySerial.read();
             if (mychar == -1) {
                 continue;
             }
-            if (mychar == 'E') {
+            if ((char)mychar == 'E') {
                 Keyboard::isKbBufferHaveEnterPressed = true;
-                Serial1.write('o');
+                MySerial.write('o');
                 continue;
             }
-            else if (mychar == 'C' && pos > 0) {
-                Keyboard::kbBufferCode.remove(pos);
+            else if ((char)mychar == 'C') {
+                Keyboard::kbBufferCode.remove(pos - 1);
                 Keyboard::isKbCorrectionPresed = true;
                 --pos;
-                Serial1.write('o');
+                if (pos == 0) {
+                    Keyboard::kbBufferCode = "";
+                }
+                MySerial.write('o');
                 continue;
             }
+            MySerial.println((char)mychar);
             pos++;
-            Serial1.write('o');
+            //MySerial.write('o');
             Keyboard::kbBufferCode += (char)mychar;
         }
     }
+    vTaskDelete(Task1);
 }

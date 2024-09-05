@@ -8,7 +8,8 @@ class Keyboard {
     static String kbBufferCode;
     static bool isKbBufferHaveEnterPressed;
     static bool isKbCorrectionPresed;
-    static void resetKeyboardState();
+    static void resetALLKeyboardState();
+    static void resetCorrectionKeyboardState();
 };
 
 #endif
