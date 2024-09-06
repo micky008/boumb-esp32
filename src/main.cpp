@@ -6,6 +6,7 @@
 #include "ConfigurationDebug.hpp"
 #include "Keyboard.hpp"
 #include "LCD.hpp"
+#include "LED.hpp"
 #include "Options.hpp"
 
 #define RXD2 16
@@ -20,11 +21,12 @@ Bornier bornier;
 Options options;
 PCF8574 keyboardI2C(0x20);
 Keyboard keyboard(keyboardI2C);
+MyLED led;
 
 int bornierEtat = BORNIER_ETAT_ALL_FILS_OK;
 
 int restant_time = 0;     // in millis
-int diminue_time = 1000;  // in milli =>  1s
+int diminue_time = 1000;  // in millis =>  1s
 bool runPlay = false;
 int maxTryRestant = 3;
 
@@ -67,6 +69,7 @@ void setup() {
     bornier.setFil(options.getFil());
     restant_time = options.getMaxTimeInMin() * 60000;
     maxTryRestant = options.getMaxTry();
+    led.setInitialTime(restant_time);
 }
 
 char temps[NBCOL];
@@ -126,7 +129,9 @@ void loop() {
         lcd.resetLine(LCD_LINE_DOWN);
         Keyboard::resetCorrectionKeyboardState();
     }
+    led.off();
     delayMicroseconds(diminue_time);
+    led.on(restant_time);
 }
 
 void core0(void* parameter) {

@@ -1,6 +1,6 @@
 <mxfile host="65bd71144e">
     <diagram id="tK_ok0hjHPLQqWNOZ2QU" name="Page-1">
-        <mxGraphModel dx="1073" dy="528" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+        <mxGraphModel dx="1058" dy="515" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
@@ -298,15 +298,6 @@
                 <mxCell id="GQIfcer_1tYumBVbKyiE-67" value="i2c SCL" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
                     <mxGeometry x="625" y="170" width="50" height="20" as="geometry"/>
                 </mxCell>
-                <mxCell id="GQIfcer_1tYumBVbKyiE-68" value="" style="endArrow=none;html=1;startArrow=classic;startFill=1;endFill=0;" parent="1" edge="1">
-                    <mxGeometry width="50" height="50" relative="1" as="geometry">
-                        <mxPoint x="560" y="220" as="sourcePoint"/>
-                        <mxPoint x="620" y="220" as="targetPoint"/>
-                    </mxGeometry>
-                </mxCell>
-                <mxCell id="GQIfcer_1tYumBVbKyiE-69" value="From pic16f" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
-                    <mxGeometry x="620" y="210" width="80" height="20" as="geometry"/>
-                </mxCell>
                 <mxCell id="GQIfcer_1tYumBVbKyiE-70" value="" style="endArrow=classic;html=1;" parent="1" edge="1">
                     <mxGeometry width="50" height="50" relative="1" as="geometry">
                         <mxPoint x="240" y="259.5" as="sourcePoint"/>
@@ -391,14 +382,8 @@
                 <mxCell id="l42J0fGlvlOmYeVjQ-0U-7" value="bobine arc&lt;br&gt;electrique" style="text;html=1;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="1" vertex="1">
                     <mxGeometry x="730" y="375" width="60" height="30" as="geometry"/>
                 </mxCell>
-                <mxCell id="4" value="" style="endArrow=classic;html=1;" edge="1" parent="1">
-                    <mxGeometry width="50" height="50" relative="1" as="geometry">
-                        <mxPoint x="560" y="199.5" as="sourcePoint"/>
-                        <mxPoint x="620" y="199.5" as="targetPoint"/>
-                    </mxGeometry>
-                </mxCell>
-                <mxCell id="5" value="TO pic16f" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
-                    <mxGeometry x="615" y="190" width="80" height="20" as="geometry"/>
+                <mxCell id="5" value="ecran&amp;nbsp; +&amp;nbsp;pcf8574 (matrix kb)" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="680" y="180" width="120" height="60" as="geometry"/>
                 </mxCell>
             </root>
         </mxGraphModel>
