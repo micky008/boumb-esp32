@@ -7,7 +7,6 @@
 #include "Keyboard.hpp"
 #include "LCD.hpp"
 #include "Options.hpp"
-#include <HardwareSerial.h>
 
 #define RXD2 16
 #define TXD2 17
@@ -16,16 +15,16 @@
 #define BORNIER_ETAT_WRONG_FIL 1
 #define BORNIER_ETAT_GOOD_FIL 2
 
-HardwareSerial MySerial(1);
-
 MyLCD lcd;
 Bornier bornier;
 Options options;
+PCF8574 keyboardI2C(0x20);
+Keyboard keyboard(keyboardI2C);
 
 int bornierEtat = BORNIER_ETAT_ALL_FILS_OK;
 
-int restant_time = 0; //in millis
-int diminue_time = 1000; //in milli =>  1s
+int restant_time = 0;     // in millis
+int diminue_time = 1000;  // in milli =>  1s
 bool runPlay = false;
 int maxTryRestant = 3;
 
@@ -33,9 +32,9 @@ TaskHandle_t Task1 = NULL;
 
 void core0(void* parameter);
 
-void BOOM(bool restart=true) {
-    //BOOM 
-    //declancher petard
+void BOOM(bool restart = true) {
+    // BOOM
+    // declancher petard
     digitalWrite(2, HIGH);
     delay(1000);
     digitalWrite(2, LOW);
@@ -44,12 +43,9 @@ void BOOM(bool restart=true) {
     }
 }
 
-
 void setup() {
-
     Serial.begin(115200);
     bornierEtat = BORNIER_ETAT_ALL_FILS_OK;
-    MySerial.begin(9600, SERIAL_8N1, RXD2, TXD2);
     lcd.initLCD();
     Keyboard::resetALLKeyboardState();
     xTaskCreatePinnedToCore(core0, "core0", 10000, NULL, 0, &Task1, 0);
@@ -60,11 +56,10 @@ void setup() {
         if (res.equals("2")) {
             Configuration conf(lcd, options);
             conf.run();
-        }else if (res.equals("99")){
+        } else if (res.equals("99")) {
             ConfigurationDebug conf(lcd, options);
             conf.run();
-        }
-        else {
+        } else {
             runPlay = true;
         }
     }
@@ -97,8 +92,7 @@ void loop() {
             c.theChoice("BOMBE Desactivee", "press keyboard");
             c.theChoice("remettre fil plz", "press to restart");
             ESP.restart();
-        }
-        else {
+        } else {
             BOOM(false);
             c.theChoice("remettre fil plz", "press to restart");
             c.theChoice("noFil: ", String(bornier.getFil()));
@@ -121,10 +115,9 @@ void loop() {
             Choice c(lcd);
             c.theChoice("BOMBE Desactivee", "press to restart");
             ESP.restart();
-        }
-        else {
+        } else {
             maxTryRestant--;
-            diminue_time = (1000 * maxTryRestant) /  options.getMaxTry();
+            diminue_time = (1000 * maxTryRestant) / options.getMaxTry();
             Keyboard::resetALLKeyboardState();
             lcd.resetLine(LCD_LINE_DOWN);
         }
@@ -151,32 +144,12 @@ void core0(void* parameter) {
         if (bornierEtat == BORNIER_ETAT_ALL_FILS_OK && bornier.isCut()) {
             if (bornier.isGoodFil()) {
                 bornierEtat = BORNIER_ETAT_GOOD_FIL;
-            }
-            else {
+            } else {
                 bornierEtat = BORNIER_ETAT_WRONG_FIL;
-            }        
+            }
         }
         if (!Keyboard::isKbBufferHaveEnterPressed) {
-            int mychar = MySerial.read();
-            if (mychar == -1) {
-                continue;
-            }
-            if ((char)mychar == 'E') {
-                Keyboard::isKbBufferHaveEnterPressed = true;
-                MySerial.write('o');
-                continue;
-            }
-            else if ((char)mychar == 'C') {
-                if (Keyboard::kbBufferCode.isEmpty()){
-                    continue;
-                }
-                Keyboard::kbBufferCode.remove(Keyboard::kbBufferCode.length() - 1);
-                Keyboard::isKbCorrectionPresed = true;
-                MySerial.write('o');
-                continue;
-            }
-            //MySerial.write('o');
-            Keyboard::kbBufferCode += (char)mychar;
+            keyboard.lire();
         }
     }
     vTaskDelete(Task1);
