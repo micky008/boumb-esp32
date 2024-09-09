@@ -18,6 +18,7 @@ class Options {
    public:
     Options();
     ~Options();
+    void initOptions();
     void saveAllOptions();
     void setMaxTime(int maxtime);
     void setCode(String code);

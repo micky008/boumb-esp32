@@ -4,13 +4,12 @@
 #include "Choice.hpp"
 #include "Configuration.hpp"
 #include "ConfigurationDebug.hpp"
-#include "Keyboard.hpp"
+//#include "KeyboardSerial.hpp"
+//#include "KeyboardLibPCF8574.hpp"
+#include "KeyboardWire.hpp"
 #include "LCD.hpp"
 #include "LED.hpp"
 #include "Options.hpp"
-
-#define RXD2 16
-#define TXD2 17
 
 #define BORNIER_ETAT_ALL_FILS_OK 0
 #define BORNIER_ETAT_WRONG_FIL 1
@@ -19,8 +18,9 @@
 MyLCD lcd;
 Bornier bornier;
 Options options;
-PCF8574 keyboardI2C(0x20);
-Keyboard keyboard(keyboardI2C);
+//KeyboardLibPCF8574 keyboard;
+KeyboardWire keyboard;
+//KeyboardSerial keyboard;
 MyLED led;
 
 int bornierEtat = BORNIER_ETAT_ALL_FILS_OK;
@@ -46,10 +46,12 @@ void BOOM(bool restart = true) {
 }
 
 void setup() {
+    initArduino();    
     Serial.begin(115200);
+    options.initOptions();
     bornierEtat = BORNIER_ETAT_ALL_FILS_OK;
+    keyboard.initKeyboard();
     lcd.initLCD();
-    Keyboard::resetALLKeyboardState();
     xTaskCreatePinnedToCore(core0, "core0", 10000, NULL, 0, &Task1, 0);
     bornier.init();
     Choice c(lcd);
@@ -58,10 +60,12 @@ void setup() {
         if (res.equals("2")) {
             Configuration conf(lcd, options);
             conf.run();
-        } else if (res.equals("99")) {
+        }
+        else if (res.equals("99")) {
             ConfigurationDebug conf(lcd, options);
             conf.run();
-        } else {
+        }
+        else {
             runPlay = true;
         }
     }
@@ -95,10 +99,10 @@ void loop() {
             c.theChoice("BOMBE Desactivee", "press keyboard");
             c.theChoice("remettre fil plz", "press to restart");
             ESP.restart();
-        } else {
+        }
+        else {
             BOOM(false);
             c.theChoice("remettre fil plz", "press to restart");
-            c.theChoice("noFil: ", String(bornier.getFil()));
             ESP.restart();
         }
     }
@@ -118,7 +122,8 @@ void loop() {
             Choice c(lcd);
             c.theChoice("BOMBE Desactivee", "press to restart");
             ESP.restart();
-        } else {
+        }
+        else {
             maxTryRestant--;
             diminue_time = (1000 * maxTryRestant) / options.getMaxTry();
             Keyboard::resetALLKeyboardState();
@@ -149,7 +154,8 @@ void core0(void* parameter) {
         if (bornierEtat == BORNIER_ETAT_ALL_FILS_OK && bornier.isCut()) {
             if (bornier.isGoodFil()) {
                 bornierEtat = BORNIER_ETAT_GOOD_FIL;
-            } else {
+            }
+            else {
                 bornierEtat = BORNIER_ETAT_WRONG_FIL;
             }
         }

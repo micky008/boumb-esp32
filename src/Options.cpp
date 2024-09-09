@@ -2,12 +2,17 @@
 
 
 Options::Options() {
-    initArduino();
+    
+    
+
+}
+void Options::initOptions() {
     opts = new Preferences();
     opts->begin("myPrefs", false);
     if (opts->isKey(OPT_BRIGNESS) == false) {
         this->saveAllOptions();
-    } else {
+    }
+    else {
         maxTimeInMin = opts->getLong(OPT_MAX_TIME);
         code = opts->getString(OPT_CODE);
         maxTry = opts->getInt(OPT_MAX_TRY);
@@ -16,7 +21,6 @@ Options::Options() {
         ledOn = opts->getBool(OPT_LED_ON_OFF);
     }
 }
-
 
 Options::~Options() { delete opts; }
 

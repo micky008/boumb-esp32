@@ -1,7 +1,7 @@
 #include "Bornier.hpp"
 
 Bornier::Bornier() {
-    
+
     pinMode(25, OUTPUT);
     pinMode(26, OUTPUT);
     pinMode(33, OUTPUT);
@@ -18,35 +18,36 @@ void Bornier::init() {
     digitalWrite(32, HIGH);
 }
 
-void Bornier::setFil(int fil){
-    if (fil == -1){
+void Bornier::setFil(int fil) {
+    if (fil == -1) {
         goodFil = (int)random(1, 5);
-    } else {
+    }
+    else {
         goodFil = fil;
     }
 }
 
-int Bornier::getFil(){
+int Bornier::getFil() {
     return goodFil;
 }
 
 bool Bornier::isCut() {
     if (filCut > -1) {
         return true;
-    } 
+    }
     if (digitalRead(27) == LOW) {
         filCut = 1;
         return true;
     }
-    if (digitalRead(26) == LOW) {
+    if (digitalRead(14) == LOW) {
         filCut = 2;
         return true;
     }
-    if (digitalRead(33) == LOW) {
+    if (digitalRead(12) == LOW) {
         filCut = 3;
         return true;
     }
-    if (digitalRead(32) == LOW) {
+    if (digitalRead(13) == LOW) {
         filCut = 4;
         return true;
     }
