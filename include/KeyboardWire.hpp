@@ -7,6 +7,7 @@
 #include <math.h>
 
 #define MODULE_ADDRESS 0x20
+#define DEBOUNCE 500
 
 #define toBit(number) (1UL << (number))
 
@@ -22,6 +23,8 @@ private:
 //253 ligne 7
 //254 ligne A
   byte row[4] = { 247,251,253,254 };
+  int oldx = -1;
+  long lastDebonce;
 };
 
 #endif

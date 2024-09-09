@@ -37,6 +37,7 @@ void core0(void* parameter);
 void BOOM(bool restart = true) {
     // BOOM
     // declancher petard
+    led.off();
     digitalWrite(2, HIGH);
     delay(1000);
     digitalWrite(2, LOW);
@@ -52,6 +53,7 @@ void setup() {
     bornierEtat = BORNIER_ETAT_ALL_FILS_OK;
     keyboard.initKeyboard();
     lcd.initLCD();
+    led.off();
     xTaskCreatePinnedToCore(core0, "core0", 10000, NULL, 0, &Task1, 0);
     bornier.init();
     Choice c(lcd);
@@ -135,7 +137,7 @@ void loop() {
         Keyboard::resetCorrectionKeyboardState();
     }
     led.off();
-    delayMicroseconds(diminue_time);
+    delay(diminue_time);
     led.on(restant_time);
 }
 

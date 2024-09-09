@@ -23,22 +23,25 @@ void KeyboardWire::lire() {
                     continue;
                 }
                 rebond = mychar;
+                oldx = x;
                 if (mychar == 'E') {
                     Keyboard::isKbBufferHaveEnterPressed = true;
                     continue;
-                }
-                else if (mychar == 'C') {
-                    Keyboard::kbBufferCode.remove(Keyboard::kbBufferCode.length() - 1);
+                } else if (mychar == 'C') {
+                    Keyboard::kbBufferCode.remove(
+                        Keyboard::kbBufferCode.length() - 1);
                     Keyboard::isKbCorrectionPresed = true;
-                }
-                else {
+                } else {
                     Keyboard::kbBufferCode += mychar;
                 }
-            }            
+            }
+            if (oldx == x && (millis() - lastDebonce) >= DEBOUNCE  ) {
+                rebond = 0;
+                lastDebonce = millis();
+            }
         }
     }
 }
-
 
 bool KeyboardWire::digitalRead(int pin) {
     Wire1.requestFrom(MODULE_ADDRESS, 1);
