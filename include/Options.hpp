@@ -32,6 +32,7 @@ class Options {
     int getMaxTry();
     int getFil();
     bool getLedStatus();
+    bool getBrigntnessStatus();
 
 
 

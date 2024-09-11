@@ -72,10 +72,11 @@ void setup() {
         }
     }
     lcd.clearAllScreen();
+    lcd.setBrightnessOn(options.getBrigntnessStatus());
     bornier.setFil(options.getFil());
     restant_time = options.getMaxTimeInMin() * 60000;
     maxTryRestant = options.getMaxTry();
-    led.setInitialTime(restant_time);
+    led.setInitialTime(options.getLedStatus() ? restant_time : NO_LED );
 }
 
 char temps[NBCOL];
@@ -108,7 +109,7 @@ void loop() {
             ESP.restart();
         }
     }
-    String codeLine = "Code :";
+    String codeLine = "Code : ";
     if (!Keyboard::kbBufferCode.isEmpty()) {
         for (int i = 0; i < Keyboard::kbBufferCode.length(); i++) {
             codeLine += "*";
@@ -138,7 +139,7 @@ void loop() {
     }
     led.off();
     delay(diminue_time);
-    led.on(restant_time);
+    led.on(restant_time);78
 }
 
 void core0(void* parameter) {

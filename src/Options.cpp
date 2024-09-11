@@ -45,3 +45,5 @@ String Options::getCode() { return code; }
 int Options::getMaxTry() { return maxTry; }
 int Options::getFil() { return fil; }
 bool Options::getLedStatus() { return ledOn; }
+bool Options::getBrigntnessStatus() { return brignessOnOff; }
+

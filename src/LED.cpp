@@ -1,14 +1,18 @@
 #include "LED.hpp"
 
-MyLED::MyLED() {    
+MyLED::MyLED() {
     pixels = new Adafruit_NeoPixel(NB_LED, 17, NEO_GRB + NEO_KHZ800);
     pixels->begin();
     green = pixels->Color(0, 255, 0);
     orenge = pixels->Color(255, 79, 0);
     red = pixels->Color(255, 0, 0);
+    isOn = true;
 }
 
 void MyLED::on(int restantTime) {
+    if (!isOn) {
+        return;
+    }
     for (int i = 0; i < NB_LED; i++) {
         if (restantTime > doublePeriode) {
             // vert
@@ -25,11 +29,18 @@ void MyLED::on(int restantTime) {
 }
 
 void MyLED::off() {
+    if (!isOn) {
+        return;
+    }
     pixels->clear();
     pixels->show();
 }
 
-void MyLED::setInitialTime(int initialTime){
+void MyLED::setInitialTime(int initialTime) {
+    if (initialTime == NO_LED) {
+        isOn = false;
+        return;
+    }
     this->initialTime = initialTime;
     periode = initialTime / 3;
     doublePeriode = periode * 2;

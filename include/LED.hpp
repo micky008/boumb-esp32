@@ -5,6 +5,7 @@
 #include <Arduino.h>
 
 #define NB_LED 6
+#define NO_LED -1
 
 class MyLED {
    public:
@@ -21,6 +22,7 @@ class MyLED {
     uint32_t green;
     uint32_t orenge;
     uint32_t red;
+    bool isOn;
 
 };
 

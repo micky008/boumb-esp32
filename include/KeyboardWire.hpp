@@ -11,7 +11,10 @@
 
 #define toBit(number) (1UL << (number))
 
-
+/**
+ * C'est comme KeyboardLibPCF8574 mais sans la lib
+ * c'est une utilisation RAW de l'i2c
+ */
 class  KeyboardWire : Keyboard {
 public:
   void initKeyboard();
@@ -22,7 +25,7 @@ private:
 //251 ligne 4
 //253 ligne 7
 //254 ligne A
-  byte row[4] = { 247,251,253,254 };
+  byte row[4] = { 247,251,253,254 }; // a convertir en binaire (0bxxxxxxx)pour mieux comprendre.
   int oldx = -1;
   long lastDebonce;
 };
