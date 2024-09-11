@@ -10,7 +10,7 @@
 
 class  KeyboardSerial :Keyboard {
 public:
-    void initKeyboard();
+    void init();
     void lire();
     
 };

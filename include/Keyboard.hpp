@@ -2,16 +2,15 @@
 #define _MY_KEYBOARD__
 
 #include <Arduino.h>
+#include "interfaces/Peripherique.hpp"
 
-class  Keyboard {
+class  Keyboard : Peripherique {
 public:
-    virtual  void initKeyboard() = 0;
     static String kbBufferCode;
     static bool isKbBufferHaveEnterPressed;
     static bool isKbCorrectionPresed;
     static void resetALLKeyboardState();
     static void resetCorrectionKeyboardState();
-    virtual  void lire() = 0;
 protected:
     char matrice[4][4] = { {'1', '2', '3', 'F'},
                           {'4', '5', '6', 'E'},

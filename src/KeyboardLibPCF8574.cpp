@@ -8,7 +8,7 @@ KeyboardLibPCF8574::~KeyboardLibPCF8574() {
     delete keyboardI2C;
 }
 
-void KeyboardLibPCF8574::initKeyboard() {
+void KeyboardLibPCF8574::init() {
     keyboardI2C = new PCF8574(0x20);
     keyboardI2C->pinMode(P0, OUTPUT);
     keyboardI2C->pinMode(P1, OUTPUT);

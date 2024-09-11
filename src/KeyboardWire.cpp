@@ -1,6 +1,6 @@
 #include "KeyboardWire.hpp"
 
-void KeyboardWire::initKeyboard() {
+void KeyboardWire::init() {
     Wire1.begin(19, 18);
     Wire1.beginTransmission(MODULE_ADDRESS);
     if (Wire1.endTransmission() != 0) {

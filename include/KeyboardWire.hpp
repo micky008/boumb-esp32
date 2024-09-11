@@ -17,7 +17,7 @@
  */
 class  KeyboardWire : Keyboard {
 public:
-  void initKeyboard();
+  void init();
   void lire();
 private:
   bool digitalRead(int pin);

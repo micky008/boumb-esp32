@@ -47,7 +47,7 @@ void BOOM(bool restart = true) {
 }
 
 void setup() {
-    initArduino();    
+    initArduino();
     Serial.begin(115200);
     options.initOptions();
     bornierEtat = BORNIER_ETAT_ALL_FILS_OK;
@@ -76,7 +76,7 @@ void setup() {
     bornier.setFil(options.getFil());
     restant_time = options.getMaxTimeInMin() * 60000;
     maxTryRestant = options.getMaxTry();
-    led.setInitialTime(options.getLedStatus() ? restant_time : NO_LED );
+    led.setInitialTime(options.getLedStatus() ? restant_time : NO_LED);
 }
 
 char temps[NBCOL];

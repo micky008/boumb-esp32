@@ -1,6 +1,6 @@
 #include "KeyboardSerial.hpp"
 
-void KeyboardSerial::initKeyboard() {
+void KeyboardSerial::init() {
 
 }
 
