@@ -1,28 +1,28 @@
 #include "Choice.hpp"
 
-
-
-Choice::Choice(MyLCD& lcd) : lcd(lcd) {}
+Choice::Choice(MyLCD& lcd, Keyboard& keyboard) : lcd(lcd), kb(keyboard) {}
 
 String Choice::theChoice(String lineUp, String lineDown) {
     lcd.clearAllScreen();
-    Keyboard::resetALLKeyboardState();
+    kb.fullReset();
     lcd.affiche(lineUp, LCD_LINE_UP);
     lcd.affiche(lineDown, LCD_LINE_DOWN);
     int pos = strlen(lineDown.c_str());
     int originalPos = pos;
-    while (!Keyboard::isKbBufferHaveEnterPressed) {
-        if (Keyboard::isKbCorrectionPresed) {
+    String res = "";
+    while (kb.etat != KEYBOARD_STATE::ENTER_PRESSED) {
+        if (kb.etat == KEYBOARD_STATE::DELETE_PRESSED) {
             pos--;
             if (pos <= originalPos) {
                 pos = originalPos;
             }
             lcd.resetLineAfterPosition(pos, LCD_LINE_DOWN);
-            Keyboard::resetCorrectionKeyboardState();
+            kb.resetStateOnly();
         }
-        lcd.append(Keyboard::kbBufferCode, pos, LCD_LINE_DOWN);
+        if (res.equals(kb.getContent())) {
+            lcd.append(kb.getContent(), pos, LCD_LINE_DOWN);
+            res = kb.getContent();
+        }
     }
-    String res = Keyboard::kbBufferCode;
-    Keyboard::resetALLKeyboardState();
-    return res;
+    return kb.lire();
 }

@@ -15,10 +15,10 @@
  * C'est comme KeyboardLibPCF8574 mais sans la lib
  * c'est une utilisation RAW de l'i2c
  */
-class  KeyboardWire : Keyboard {
+class  KeyboardWire : public Keyboard {
 public:
-  void initKeyboard();
-  void lire();
+  void init();
+  void scan();
 private:
   bool digitalRead(int pin);
 //247 ligne 1

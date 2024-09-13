@@ -4,31 +4,26 @@
 #include "Choice.hpp"
 #include "Configuration.hpp"
 #include "ConfigurationDebug.hpp"
-//#include "KeyboardSerial.hpp"
-//#include "KeyboardLibPCF8574.hpp"
+// #include "KeyboardSerial.hpp"
+// #include "KeyboardLibPCF8574.hpp"
 #include "KeyboardWire.hpp"
 #include "LCD.hpp"
 #include "LED.hpp"
 #include "Options.hpp"
 
-#define BORNIER_ETAT_ALL_FILS_OK 0
-#define BORNIER_ETAT_WRONG_FIL 1
-#define BORNIER_ETAT_GOOD_FIL 2
-
 MyLCD lcd;
 Bornier bornier;
 Options options;
-//KeyboardLibPCF8574 keyboard;
-KeyboardWire keyboard;
-//KeyboardSerial keyboard;
+// KeyboardLibPCF8574 keyboard; /idem que Wire mais en lib (utilise Wire)
+// KeyboardSerial keyboard; //surtout utiliser pour le debug
+KeyboardWire keyboard;  // comme LPCF8574 mais en utilisant Wire1
 MyLED led;
-
-int bornierEtat = BORNIER_ETAT_ALL_FILS_OK;
 
 int restant_time = 0;     // in millis
 int diminue_time = 1000;  // in millis =>  1s
 bool runPlay = false;
 int maxTryRestant = 3;
+unsigned long lastLoop = 0;
 
 TaskHandle_t Task1 = NULL;
 
@@ -37,7 +32,7 @@ void core0(void* parameter);
 void BOOM(bool restart = true) {
     // BOOM
     // declancher petard
-    led.off();
+    led.forceColor(LED_COLOR::RED);
     digitalWrite(2, HIGH);
     delay(1000);
     digitalWrite(2, LOW);
@@ -47,71 +42,71 @@ void BOOM(bool restart = true) {
 }
 
 void setup() {
-    initArduino();    
-    Serial.begin(115200);
-    options.initOptions();
-    bornierEtat = BORNIER_ETAT_ALL_FILS_OK;
-    keyboard.initKeyboard();
-    lcd.initLCD();
-    led.off();
-    xTaskCreatePinnedToCore(core0, "core0", 10000, NULL, 0, &Task1, 0);
+    initArduino();
+    options.init();
+    keyboard.init();
+    lcd.init();
+    led.init();
     bornier.init();
-    Choice c(lcd);
+    xTaskCreatePinnedToCore(core0, "core0", 10000, NULL, 0, &Task1, 0);
+    Choice c(lcd, keyboard);
     while (!runPlay) {
         String res = c.theChoice("Jouer ?", "1-oui 2-non: ");
         if (res.equals("2")) {
-            Configuration conf(lcd, options);
+            Configuration conf(lcd, keyboard, options);
             conf.run();
-        }
-        else if (res.equals("99")) {
-            ConfigurationDebug conf(lcd, options);
+        } else if (res.equals("99")) {
+            ConfigurationDebug conf(lcd, keyboard, options);
             conf.run();
-        }
-        else {
+        } else {
             runPlay = true;
         }
     }
+    lcd.applyOption(options);
+    bornier.applyOption(options);
+    led.applyOption(options);
+
     lcd.clearAllScreen();
-    lcd.setBrightnessOn(options.getBrigntnessStatus());
-    bornier.setFil(options.getFil());
-    restant_time = options.getMaxTimeInMin() * 60000;
+    restant_time = options.getInitialTime();
     maxTryRestant = options.getMaxTry();
-    led.setInitialTime(options.getLedStatus() ? restant_time : NO_LED );
 }
 
 char temps[NBCOL];
 
 void loop() {
-    memset(temps, 0, NBCOL);
-    int x = restant_time / 1000;
-    int seconds = x % 60;
-    x /= 60;
-    int minutes = x % 60;
-    x /= 60;
-    int hours = x % 24;
-    sprintf(temps, "Temps: %02d:%02d:%02d", hours, minutes, seconds);
-    lcd.affiche(String(temps), LCD_LINE_UP);
-
+    if ((millis() - lastLoop) >= diminue_time) {
+        lastLoop = millis();
+        led.on(restant_time);
+        memset(temps, '\0', NBCOL - 1);
+        int x = restant_time / 1000;
+        int seconds = x % 60;
+        x /= 60;
+        int minutes = x % 60;
+        x /= 60;
+        int hours = x % 24;
+        sprintf(temps, "Temps: %02d:%02d:%02d", hours, minutes, seconds);
+        lcd.affiche(String(temps), LCD_LINE_UP);
+    }
     if (restant_time <= 0) {
+        lcd.affiche(String("Temps: 00:00:00"), LCD_LINE_UP); //enleve un bug graphique
         BOOM();
         return;
     }
-    if (bornierEtat != BORNIER_ETAT_ALL_FILS_OK) {
-        Choice c(lcd);
-        if (bornierEtat == BORNIER_ETAT_GOOD_FIL) {
-            c.theChoice("BOMBE Desactivee", "press keyboard");
+    if (bornier.getEtat() != BORNIER_ETAT::ALL_FILS_OK) {
+        Choice c(lcd, keyboard);
+        if (bornier.getEtat() == BORNIER_ETAT::GOOD_FIL) {
+            c.theChoice("BOMBE Desactivee", "press E");
             c.theChoice("remettre fil plz", "press to restart");
             ESP.restart();
-        }
-        else {
+        } else {
             BOOM(false);
             c.theChoice("remettre fil plz", "press to restart");
             ESP.restart();
         }
     }
     String codeLine = "Code : ";
-    if (!Keyboard::kbBufferCode.isEmpty()) {
-        for (int i = 0; i < Keyboard::kbBufferCode.length(); i++) {
+    if (!keyboard.getContent().isEmpty()) {
+        for (int i = 0; i < keyboard.getContent().length(); i++) {
             codeLine += "*";
         }
     }
@@ -120,26 +115,25 @@ void loop() {
     if (maxTryRestant == 0) {
         BOOM();
     }
-    if (Keyboard::isKbBufferHaveEnterPressed) {
-        if (Keyboard::kbBufferCode.equals(options.getCode())) {
-            Choice c(lcd);
+    if (keyboard.etat == KEYBOARD_STATE::ENTER_PRESSED) {
+        String readCode = keyboard.lire();
+        if (readCode.equals(options.getCode())) {
+            Choice c(lcd, keyboard);
             c.theChoice("BOMBE Desactivee", "press to restart");
             ESP.restart();
-        }
-        else {
+        } else {
             maxTryRestant--;
             diminue_time = (1000 * maxTryRestant) / options.getMaxTry();
-            Keyboard::resetALLKeyboardState();
             lcd.resetLine(LCD_LINE_DOWN);
         }
     }
-    if (Keyboard::isKbCorrectionPresed) {
+    if (keyboard.etat == KEYBOARD_STATE::DELETE_PRESSED) {
+        // delete toute la ligne car elle serra re-ecrite a la prochaine
+        // iteration
         lcd.resetLine(LCD_LINE_DOWN);
-        Keyboard::resetCorrectionKeyboardState();
+        keyboard.resetStateOnly();
     }
     led.off();
-    delay(diminue_time);
-    led.on(restant_time);78
 }
 
 void core0(void* parameter) {
@@ -154,17 +148,8 @@ void core0(void* parameter) {
                 }
             }
         }
-        if (bornierEtat == BORNIER_ETAT_ALL_FILS_OK && bornier.isCut()) {
-            if (bornier.isGoodFil()) {
-                bornierEtat = BORNIER_ETAT_GOOD_FIL;
-            }
-            else {
-                bornierEtat = BORNIER_ETAT_WRONG_FIL;
-            }
-        }
-        if (!Keyboard::isKbBufferHaveEnterPressed) {
-            keyboard.lire();
-        }
+        bornier.scan();
+        keyboard.scan();
     }
     vTaskDelete(Task1);
 }

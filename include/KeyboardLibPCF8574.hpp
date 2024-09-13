@@ -3,16 +3,19 @@
 
 #include <Arduino.h>
 #include <PCF8574.h>
-#include "Keyboard.hpp"
 
-class  KeyboardLibPCF8574 : Keyboard {
-public:
-  KeyboardLibPCF8574();
-  ~KeyboardLibPCF8574();
-  void initKeyboard();
-  void lire();
-private:
-  PCF8574* keyboardI2C;
+#include "Keyboard.hpp"
+#include "interfaces/Peripherique.hpp"
+
+class KeyboardLibPCF8574 : public Keyboard {
+   public:
+    KeyboardLibPCF8574();
+    ~KeyboardLibPCF8574();
+    void init();
+    void scan();
+
+   private:
+    PCF8574* keyboardI2C;
 };
 
 #endif

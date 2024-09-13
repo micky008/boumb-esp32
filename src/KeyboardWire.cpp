@@ -1,17 +1,23 @@
 #include "KeyboardWire.hpp"
 
-void KeyboardWire::initKeyboard() {
+void KeyboardWire::init() {
     Wire1.begin(19, 18);
     Wire1.beginTransmission(MODULE_ADDRESS);
     if (Wire1.endTransmission() != 0) {
+        if (!Serial.available()) {
+            Serial.begin(115200);
+        }
         Serial.print(F("Le module PCF8574 ne répond pas à l'adresse 0x"));
         Serial.println(MODULE_ADDRESS, HEX);
         Serial.println(F("Arrêt du programme."));
     }
-    Keyboard::resetALLKeyboardState();
+    fullReset();
 }
 
-void KeyboardWire::lire() {
+void KeyboardWire::scan() {
+    if (etat == KEYBOARD_STATE::ENTER_PRESSED) {
+        return;
+    }
     for (int y = 0; y < 4; y++) {
         Wire1.beginTransmission(MODULE_ADDRESS);
         Wire1.write(row[y]);
@@ -25,17 +31,16 @@ void KeyboardWire::lire() {
                 rebond = mychar;
                 oldx = x;
                 if (mychar == 'E') {
-                    Keyboard::isKbBufferHaveEnterPressed = true;
+                    etat = KEYBOARD_STATE::ENTER_PRESSED;
                     continue;
                 } else if (mychar == 'C') {
-                    Keyboard::kbBufferCode.remove(
-                        Keyboard::kbBufferCode.length() - 1);
-                    Keyboard::isKbCorrectionPresed = true;
+                    kbBufferCode.remove(kbBufferCode.length() - 1);
+                    etat = KEYBOARD_STATE::DELETE_PRESSED;
                 } else {
-                    Keyboard::kbBufferCode += mychar;
+                    kbBufferCode += mychar;
                 }
             }
-            if (oldx == x && (millis() - lastDebonce) >= DEBOUNCE  ) {
+            if (oldx == x && (millis() - lastDebonce) >= DEBOUNCE) {
                 rebond = 0;
                 lastDebonce = millis();
             }

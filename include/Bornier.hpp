@@ -3,18 +3,22 @@
 
 #include <Arduino.h>
 
-class Bornier {
-    public:
-        Bornier();
-        void init();
-        bool isCut();
-        bool isGoodFil();
-        void setFil(int fil);
-        int getFil();
-    private:
-        int goodFil;
-        int filCut = -1;
-};
+#include "interfaces/Peripherique.hpp"
+#include "interfaces/options/OBornier.hpp"
 
+enum BORNIER_ETAT { ALL_FILS_OK, WRONG_FIL, GOOD_FIL };
+
+class Bornier : Peripherique {
+   public:
+    Bornier();
+    void init();
+    void applyOption(OptionBornier& obornier);
+    void scan();
+    BORNIER_ETAT getEtat();
+
+   private:
+    int goodFil;
+    int filCut = -1;
+};
 
 #endif

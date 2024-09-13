@@ -4,6 +4,14 @@
 #include <Arduino.h>
 #include <Preferences.h>
 
+#include "interfaces/Initialisation.hpp"
+#include "interfaces/options/OBornier.hpp"
+#include "interfaces/options/OCode.hpp"
+#include "interfaces/options/OLCD.hpp"
+#include "interfaces/options/OLED.hpp"
+#include "interfaces/options/OMaxTime.hpp"
+#include "interfaces/options/OMaxTry.hpp"
+
 #define VERSION 2.0
 
 #define OPT_MAX_TIME "maxtime"
@@ -14,27 +22,30 @@
 #define OPT_LED_ON_OFF "ledonoff"
 #define OPT_NO_FIL "nofil"
 
-class Options {
+class Options : Initialisation,
+                public OptionBornier,
+                public OptionCode,
+                public OptionLCD,
+                public OptionLED,
+                public OptionMaxTime,
+                public OptionMaxTry {
    public:
-    Options();
-    ~Options();
-    void initOptions();
+    void init();
     void saveAllOptions();
-    void setMaxTime(int maxtime);
-    void setCode(String code);
-    void setMaxTry(int maxtry);
-    void setBrigness(bool on);
-    void setFil(int file);
-    void setLedStatus(bool on);
 
-    int getMaxTimeInMin();
+    FIL_BORNIER getFil();
+    void setFil(FIL_BORNIER fil);
     String getCode();
-    int getMaxTry();
-    int getFil();
-    bool getLedStatus();
-    bool getBrigntnessStatus();
-
-
+    void setCode(String code);
+    bool getBrigtnessOn();
+    void setBrignessOn(bool onOff);
+    bool isLEDOn();
+    void setLedOn(bool onOff);
+    int getInitialTime();
+    u_int16_t getMaxTimeInMin();
+    void setMaxTimeInMin(u_int16_t maxtime);
+    uint8_t getMaxTry();
+    void setMaxTry(uint8_t maxTry);
 
    private:
     Preferences *opts;
