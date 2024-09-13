@@ -12,7 +12,7 @@
 #include "interfaces/options/OMaxTime.hpp"
 #include "interfaces/options/OMaxTry.hpp"
 
-#define VERSION 2.0
+#define VERSION 2.1
 
 #define OPT_MAX_TIME "maxtime"
 #define OPT_CODE "optcode"
