@@ -2,12 +2,12 @@
 
 MyLCD::MyLCD() { internLCD = new LiquidCrystal_I2C(0x27, NBCOL, NBROW); }
 
-void MyLCD::initLCD() {
+void MyLCD::init() {
     internLCD->init();
     internLCD->backlight();
     // 0 = id entry //utiliser lcd.setCursor(0, 0);
     // lcd.write(0); pour ecrire le char
-    internLCD->createChar(0, skullHead);
+    //internLCD->createChar(0, skullHead);
     affiche("Hello !", LCD_LINE_UP);
     delay(1000);
     internLCD->clear();
@@ -25,11 +25,10 @@ void MyLCD::append(String lineStr, int posCur, int line) {
 
 void MyLCD::posCur(int y, int x) { internLCD->setCursor(y, x); }
 
-void MyLCD::setBrightnessOn(bool on) {
-    if (on) {
+void MyLCD::applyOption(OptionLCD& olcd) {
+    if (olcd.getBrigtnessOn()) {
         internLCD->backlight();
-    }
-    else {
+    } else {
         internLCD->noBacklight();
     }
 }
@@ -42,16 +41,13 @@ void MyLCD::resetLine(int line) {
     internLCD->setCursor(line, 0);
 }
 
-void MyLCD::resetLineAfterPosition(int pos,int line) {
+void MyLCD::resetLineAfterPosition(int pos, int line) {
     internLCD->setCursor(pos, line);
-    char lineChar[NBCOL-pos];
-    memset(lineChar, ' ', NBCOL-pos);
+    char lineChar[NBCOL - pos];
+    memset(lineChar, ' ', NBCOL - pos);
     internLCD->printstr(lineChar);
 }
 
-
-void MyLCD::clearAllScreen() {
-    internLCD->clear();
-}
+void MyLCD::clearAllScreen() { internLCD->clear(); }
 
 MyLCD::~MyLCD() { delete internLCD; }

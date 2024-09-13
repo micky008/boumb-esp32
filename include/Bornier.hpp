@@ -2,21 +2,27 @@
 #define _MY_BORNIER__
 
 #include <Arduino.h>
-#include "interfaces/Peripherique.hpp"
 
-class Bornier :Peripherique {
-public:
+#include "interfaces/Peripherique.hpp"
+#include "interfaces/options/OBornier.hpp"
+
+enum BORNIER_ETAT {
+    ALL_FILS_OK,
+    WRONG_FIL,
+    GOOD_FIL
+};
+
+class Bornier : Peripherique {
+   public:
     Bornier();
     void init();
-    bool isCut();
-    bool isGoodFil();
-    void setFil(int fil);
-    int getFil();
+    void applyOption(OptionBornier& obornier);
     void lire();
-private:
+    BORNIER_ETAT getEtat();
+
+   private:
     int goodFil;
     int filCut = -1;
 };
-
 
 #endif

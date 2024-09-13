@@ -4,26 +4,20 @@
 #include "Choice.hpp"
 #include "Configuration.hpp"
 #include "ConfigurationDebug.hpp"
-//#include "KeyboardSerial.hpp"
-//#include "KeyboardLibPCF8574.hpp"
+// #include "KeyboardSerial.hpp"
+// #include "KeyboardLibPCF8574.hpp"
 #include "KeyboardWire.hpp"
 #include "LCD.hpp"
 #include "LED.hpp"
 #include "Options.hpp"
 
-#define BORNIER_ETAT_ALL_FILS_OK 0
-#define BORNIER_ETAT_WRONG_FIL 1
-#define BORNIER_ETAT_GOOD_FIL 2
-
 MyLCD lcd;
 Bornier bornier;
 Options options;
-//KeyboardLibPCF8574 keyboard;
-KeyboardWire keyboard;
-//KeyboardSerial keyboard;
+// KeyboardLibPCF8574 keyboard; /idem que Wire mais en lib (utilise Wire)
+// KeyboardSerial keyboard; //surtout utiliser pour le debug
+KeyboardWire keyboard; //comme LPCF8574 mais en utilisant Wire1
 MyLED led;
-
-int bornierEtat = BORNIER_ETAT_ALL_FILS_OK;
 
 int restant_time = 0;     // in millis
 int diminue_time = 1000;  // in millis =>  1s
@@ -48,35 +42,33 @@ void BOOM(bool restart = true) {
 
 void setup() {
     initArduino();
-    Serial.begin(115200);
-    options.initOptions();
-    bornierEtat = BORNIER_ETAT_ALL_FILS_OK;
-    keyboard.initKeyboard();
-    lcd.initLCD();
-    led.off();
-    xTaskCreatePinnedToCore(core0, "core0", 10000, NULL, 0, &Task1, 0);
+    //Serial.begin(115200);
+    options.init();
+    keyboard.init();
+    lcd.init();
+    led.init();
     bornier.init();
+    xTaskCreatePinnedToCore(core0, "core0", 10000, NULL, 0, &Task1, 0);
     Choice c(lcd);
     while (!runPlay) {
         String res = c.theChoice("Jouer ?", "1-oui 2-non: ");
         if (res.equals("2")) {
             Configuration conf(lcd, options);
             conf.run();
-        }
-        else if (res.equals("99")) {
+        } else if (res.equals("99")) {
             ConfigurationDebug conf(lcd, options);
             conf.run();
-        }
-        else {
+        } else {
             runPlay = true;
         }
     }
+    lcd.applyOption(options);
+    bornier.applyOption(options);
+    led.applyOption(options);
+    
     lcd.clearAllScreen();
-    lcd.setBrightnessOn(options.getBrigntnessStatus());
-    bornier.setFil(options.getFil());
-    restant_time = options.getMaxTimeInMin() * 60000;
+    restant_time = options.getInitialTime();
     maxTryRestant = options.getMaxTry();
-    led.setInitialTime(options.getLedStatus() ? restant_time : NO_LED);
 }
 
 char temps[NBCOL];
@@ -96,14 +88,13 @@ void loop() {
         BOOM();
         return;
     }
-    if (bornierEtat != BORNIER_ETAT_ALL_FILS_OK) {
+    if (bornier.getEtat() != BORNIER_ETAT::ALL_FILS_OK) {
         Choice c(lcd);
-        if (bornierEtat == BORNIER_ETAT_GOOD_FIL) {
+        if (bornier.getEtat() == BORNIER_ETAT::GOOD_FIL) {
             c.theChoice("BOMBE Desactivee", "press keyboard");
             c.theChoice("remettre fil plz", "press to restart");
             ESP.restart();
-        }
-        else {
+        } else {
             BOOM(false);
             c.theChoice("remettre fil plz", "press to restart");
             ESP.restart();
@@ -125,8 +116,7 @@ void loop() {
             Choice c(lcd);
             c.theChoice("BOMBE Desactivee", "press to restart");
             ESP.restart();
-        }
-        else {
+        } else {
             maxTryRestant--;
             diminue_time = (1000 * maxTryRestant) / options.getMaxTry();
             Keyboard::resetALLKeyboardState();
@@ -139,7 +129,7 @@ void loop() {
     }
     led.off();
     delay(diminue_time);
-    led.on(restant_time);78
+    led.on(restant_time);    
 }
 
 void core0(void* parameter) {
@@ -154,17 +144,8 @@ void core0(void* parameter) {
                 }
             }
         }
-        if (bornierEtat == BORNIER_ETAT_ALL_FILS_OK && bornier.isCut()) {
-            if (bornier.isGoodFil()) {
-                bornierEtat = BORNIER_ETAT_GOOD_FIL;
-            }
-            else {
-                bornierEtat = BORNIER_ETAT_WRONG_FIL;
-            }
-        }
-        if (!Keyboard::isKbBufferHaveEnterPressed) {
-            keyboard.lire();
-        }
+        bornier.lire();
+        keyboard.lire();
     }
     vTaskDelete(Task1);
 }

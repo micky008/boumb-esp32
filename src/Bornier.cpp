@@ -1,7 +1,6 @@
 #include "Bornier.hpp"
 
 Bornier::Bornier() {
-
     pinMode(25, OUTPUT);
     pinMode(26, OUTPUT);
     pinMode(33, OUTPUT);
@@ -18,40 +17,39 @@ void Bornier::init() {
     digitalWrite(32, HIGH);
 }
 
-void Bornier::setFil(int fil) {
-    if (fil == -1) {
+void Bornier::applyOption(OptionBornier& oBornier) {
+    int filTmp = static_cast<int>(oBornier.getFil());
+    if (filTmp == -1) {
         goodFil = (int)random(1, 5);
-    }
-    else {
-        goodFil = fil;
+    } else {
+        goodFil = filTmp;
     }
 }
 
-int Bornier::getFil() {
-    return goodFil;
-}
-
-bool Bornier::isCut() {
+void Bornier::lire() {
     if (filCut > -1) {
-        return true;
+        return;
     }
     if (digitalRead(27) == LOW) {
         filCut = 1;
-        return true;
     }
     if (digitalRead(14) == LOW) {
         filCut = 2;
-        return true;
     }
     if (digitalRead(12) == LOW) {
         filCut = 3;
-        return true;
     }
     if (digitalRead(13) == LOW) {
         filCut = 4;
-        return true;
     }
-    return false;
 }
 
-bool Bornier::isGoodFil() { return goodFil == filCut; }
+BORNIER_ETAT Bornier::getEtat() {
+    if (filCut == -1) {
+        return BORNIER_ETAT::ALL_FILS_OK;
+    }
+    if (goodFil == filCut) {
+        return BORNIER_ETAT::GOOD_FIL;
+    }
+    return BORNIER_ETAT::WRONG_FIL;
+}

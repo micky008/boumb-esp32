@@ -8,6 +8,7 @@ MyLED::MyLED() {
     red = pixels->Color(255, 0, 0);
     isOn = true;
 }
+void MyLED::init() { this->off(); }
 
 void MyLED::on(int restantTime) {
     if (!isOn) {
@@ -36,12 +37,12 @@ void MyLED::off() {
     pixels->show();
 }
 
-void MyLED::setInitialTime(int initialTime) {
-    if (initialTime == NO_LED) {
+void MyLED::applyOption(OptionLED& oled) {
+    if (!oled.isLEDOn()) {
         isOn = false;
         return;
     }
-    this->initialTime = initialTime;
+    initialTime = oled.getInitialTime();
     periode = initialTime / 3;
     doublePeriode = periode * 2;
 }

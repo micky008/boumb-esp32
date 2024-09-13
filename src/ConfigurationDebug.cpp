@@ -22,7 +22,7 @@ bool ConfigurationDebug::run() {
     } else if (res.equals("5")) {
         firstEcran.theChoice("Brightness ?", "lol");
     } else if (res.equals("6")) {
-        res = firstEcran.theChoice("LED ? Debug", String(options.getLedStatus() ? "true" : "false"));
+        res = firstEcran.theChoice("LED ? Debug", String(options.isLEDOn() ? "true" : "false"));
     }else if (res.equals("7")) {
         firstEcran.theChoice("no FIL debug", String(options.getFil()));
     } else {

@@ -12,6 +12,9 @@ void KeyboardWire::init() {
 }
 
 void KeyboardWire::lire() {
+    if (Keyboard::isKbBufferHaveEnterPressed) {
+        return;
+    }
     for (int y = 0; y < 4; y++) {
         Wire1.beginTransmission(MODULE_ADDRESS);
         Wire1.write(row[y]);
@@ -35,7 +38,7 @@ void KeyboardWire::lire() {
                     Keyboard::kbBufferCode += mychar;
                 }
             }
-            if (oldx == x && (millis() - lastDebonce) >= DEBOUNCE  ) {
+            if (oldx == x && (millis() - lastDebonce) >= DEBOUNCE) {
                 rebond = 0;
                 lastDebonce = millis();
             }

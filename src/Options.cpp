@@ -1,18 +1,11 @@
 #include "Options.hpp"
 
-
-Options::Options() {
-    
-    
-
-}
-void Options::initOptions() {
+void Options::init() {
     opts = new Preferences();
     opts->begin("myPrefs", false);
     if (opts->isKey(OPT_BRIGNESS) == false) {
         this->saveAllOptions();
-    }
-    else {
+    } else {
         maxTimeInMin = opts->getLong(OPT_MAX_TIME);
         code = opts->getString(OPT_CODE);
         maxTry = opts->getInt(OPT_MAX_TRY);
@@ -21,9 +14,6 @@ void Options::initOptions() {
         ledOn = opts->getBool(OPT_LED_ON_OFF);
     }
 }
-
-Options::~Options() { delete opts; }
-
 void Options::saveAllOptions() {
     opts->putLong(OPT_MAX_TIME, maxTimeInMin);
     opts->putString(OPT_CODE, code);
@@ -33,17 +23,20 @@ void Options::saveAllOptions() {
     opts->putBool(OPT_LED_ON_OFF, ledOn);
 }
 
-void Options::setMaxTime(int maxtime) { maxTimeInMin = maxtime; }
+void Options::setMaxTimeInMin(u_int16_t maxtime) { maxTimeInMin = maxtime; }
 void Options::setCode(String code) { this->code = code; }
-void Options::setMaxTry(int maxtry) { this->maxTry = maxtry; }
-void Options::setBrigness(bool on) { brignessOnOff = on; }
-void Options::setFil(int fil) { this->fil = fil; }
-void Options::setLedStatus(bool on) { ledOn = on; }
+void Options::setMaxTry(uint8_t maxtry) { this->maxTry = maxtry; }
+void Options::setBrignessOn(bool on) { brignessOnOff = on; }
+void Options::setFil(FIL_BORNIER fil) { this->fil = static_cast<int>(fil); }
+void Options::setLedOn(bool on) { ledOn = on; }
 
-int Options::getMaxTimeInMin() { return maxTimeInMin; }
+u_int16_t Options::getMaxTimeInMin() { return maxTimeInMin; }
 String Options::getCode() { return code; }
-int Options::getMaxTry() { return maxTry; }
-int Options::getFil() { return fil; }
-bool Options::getLedStatus() { return ledOn; }
-bool Options::getBrigntnessStatus() { return brignessOnOff; }
+uint8_t Options::getMaxTry() { return maxTry; }
+FIL_BORNIER Options::getFil() { return FIL_BORNIER(fil); }
+bool Options::isLEDOn() { return ledOn; }
+bool Options::getBrigtnessOn() { return brignessOnOff; }
 
+int Options::getInitialTime() {
+    return maxTimeInMin * 60000;
+}  // trick only for LED

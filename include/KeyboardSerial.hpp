@@ -3,16 +3,16 @@
 
 #include <Arduino.h>
 #include <HardwareSerial.h>
+
 #include "Keyboard.hpp"
 
 #define RXD2 16
 #define TXD2 17
 
-class  KeyboardSerial :Keyboard {
-public:
+class KeyboardSerial : public Keyboard {
+   public:
     void init();
     void lire();
-    
 };
 
 #endif

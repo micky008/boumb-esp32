@@ -4,7 +4,7 @@
 #include <Arduino.h>
 #include "interfaces/Peripherique.hpp"
 
-class  Keyboard : Peripherique {
+class  Keyboard : public Peripherique {
 public:
     static String kbBufferCode;
     static bool isKbBufferHaveEnterPressed;
