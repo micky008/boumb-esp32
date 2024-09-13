@@ -7,7 +7,6 @@ class ConfigurationDebug : Configuration {
    public:
     ConfigurationDebug(MyLCD &lcd, Options &opts);
     bool run();
-
 };
 
 #endif

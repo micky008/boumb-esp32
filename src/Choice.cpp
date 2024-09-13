@@ -1,7 +1,5 @@
 #include "Choice.hpp"
 
-
-
 Choice::Choice(MyLCD& lcd) : lcd(lcd) {}
 
 String Choice::theChoice(String lineUp, String lineDown) {

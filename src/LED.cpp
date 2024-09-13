@@ -37,6 +37,23 @@ void MyLED::off() {
     pixels->show();
 }
 
+void MyLED::forceColor(LED_COLOR color) {
+    pixels->clear();
+    for (int i = 0; i < NB_LED; i++) {
+        if (color == LED_COLOR::GREEN) {
+            // vert
+            pixels->setPixelColor(i, green);
+        } else if (color == LED_COLOR::ORANGE) {
+            // orenge FF4F00
+            pixels->setPixelColor(i, orenge);
+        } else {
+            // red
+            pixels->setPixelColor(i, red);
+        }
+    }
+    pixels->show();
+}
+
 void MyLED::applyOption(OptionLED& oled) {
     if (!oled.isLEDOn()) {
         isOn = false;

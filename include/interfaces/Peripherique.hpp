@@ -4,9 +4,6 @@
 #include "./Initialisation.hpp"
 #include "./Readable.hpp"
 
-class Peripherique : Initialisation, Readable {
-
-};
-
+class Peripherique : Initialisation, Readable {};
 
 #endif

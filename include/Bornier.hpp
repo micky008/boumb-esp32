@@ -6,11 +6,7 @@
 #include "interfaces/Peripherique.hpp"
 #include "interfaces/options/OBornier.hpp"
 
-enum BORNIER_ETAT {
-    ALL_FILS_OK,
-    WRONG_FIL,
-    GOOD_FIL
-};
+enum BORNIER_ETAT { ALL_FILS_OK, WRONG_FIL, GOOD_FIL };
 
 class Bornier : Peripherique {
    public:

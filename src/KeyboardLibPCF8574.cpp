@@ -1,12 +1,8 @@
 #include "KeyboardLibPCF8574.hpp"
 
-KeyboardLibPCF8574::KeyboardLibPCF8574() {
-    keyboardI2C = new PCF8574(0x20);
-}
+KeyboardLibPCF8574::KeyboardLibPCF8574() { keyboardI2C = new PCF8574(0x20); }
 
-KeyboardLibPCF8574::~KeyboardLibPCF8574() {
-    delete keyboardI2C;
-}
+KeyboardLibPCF8574::~KeyboardLibPCF8574() { delete keyboardI2C; }
 
 void KeyboardLibPCF8574::init() {
     keyboardI2C = new PCF8574(0x20);
@@ -31,19 +27,17 @@ void KeyboardLibPCF8574::lire() {
             char mychar = matrice[x][y];
             if (rebond != mychar) {
                 rebond = mychar;
-            }
-            else {
+            } else {
                 continue;
             }
             if (mychar == 'E') {
                 Keyboard::isKbBufferHaveEnterPressed = true;
                 return;
-            }
-            else if (mychar == 'C') {
-                Keyboard::kbBufferCode.remove(Keyboard::kbBufferCode.length() - 1);
+            } else if (mychar == 'C') {
+                Keyboard::kbBufferCode.remove(Keyboard::kbBufferCode.length() -
+                                              1);
                 Keyboard::isKbCorrectionPresed = true;
-            }
-            else {
+            } else {
                 Keyboard::kbBufferCode += mychar;
             }
         }

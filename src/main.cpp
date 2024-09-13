@@ -16,7 +16,7 @@ Bornier bornier;
 Options options;
 // KeyboardLibPCF8574 keyboard; /idem que Wire mais en lib (utilise Wire)
 // KeyboardSerial keyboard; //surtout utiliser pour le debug
-KeyboardWire keyboard; //comme LPCF8574 mais en utilisant Wire1
+KeyboardWire keyboard;  // comme LPCF8574 mais en utilisant Wire1
 MyLED led;
 
 int restant_time = 0;     // in millis
@@ -31,7 +31,7 @@ void core0(void* parameter);
 void BOOM(bool restart = true) {
     // BOOM
     // declancher petard
-    led.off();
+    led.forceColor(LED_COLOR::RED);
     digitalWrite(2, HIGH);
     delay(1000);
     digitalWrite(2, LOW);
@@ -42,7 +42,7 @@ void BOOM(bool restart = true) {
 
 void setup() {
     initArduino();
-    //Serial.begin(115200);
+    // Serial.begin(115200);
     options.init();
     keyboard.init();
     lcd.init();
@@ -65,7 +65,7 @@ void setup() {
     lcd.applyOption(options);
     bornier.applyOption(options);
     led.applyOption(options);
-    
+
     lcd.clearAllScreen();
     restant_time = options.getInitialTime();
     maxTryRestant = options.getMaxTry();
@@ -129,7 +129,7 @@ void loop() {
     }
     led.off();
     delay(diminue_time);
-    led.on(restant_time);    
+    led.on(restant_time);
 }
 
 void core0(void* parameter) {

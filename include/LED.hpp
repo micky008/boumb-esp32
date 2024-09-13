@@ -10,12 +10,15 @@
 #define NB_LED 6
 #define NO_LED -1
 
+enum LED_COLOR { GREEN, ORANGE, RED };
+
 class MyLED : Initialisation {
    public:
     MyLED();
     ~MyLED();
     void init();
     void on(int restantTime);
+    void forceColor(LED_COLOR color);
     void off();
     void applyOption(OptionLED& oled);
 

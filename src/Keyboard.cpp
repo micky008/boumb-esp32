@@ -13,7 +13,3 @@ void Keyboard::resetALLKeyboardState() {
 void Keyboard::resetCorrectionKeyboardState() {
     Keyboard::isKbCorrectionPresed = false;
 }
-
-
-
-

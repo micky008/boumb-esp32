@@ -4,11 +4,9 @@
 #include <Arduino.h>
 
 class OptionMaxTime {
-
-
-    public :
-        virtual uint16_t getMaxTimeInMin() = 0;
-        virtual void setMaxTimeInMin(uint16_t maxTime) = 0;
+   public:
+    virtual uint16_t getMaxTimeInMin() = 0;
+    virtual void setMaxTimeInMin(uint16_t maxTime) = 0;
 };
 
 #endif
