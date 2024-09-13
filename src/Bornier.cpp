@@ -26,7 +26,7 @@ void Bornier::applyOption(OptionBornier& oBornier) {
     }
 }
 
-void Bornier::lire() {
+void Bornier::scan() {
     if (filCut > -1) {
         return;
     }

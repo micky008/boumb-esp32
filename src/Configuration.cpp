@@ -1,11 +1,11 @@
 #include "Configuration.hpp"
 
-Configuration::Configuration(MyLCD& lcd, Options& opts)
-    : lcd(lcd), options(opts) {}
+Configuration::Configuration(MyLCD& lcd, Keyboard& kb, Options& opts)
+    : lcd(lcd), kb(kb), options(opts) {}
 
 bool Configuration::run() {
     lcd.clearAllScreen();
-    Choice firstEcran(lcd);
+    Choice firstEcran(lcd, kb);
     String res = firstEcran.theChoice("Num. options", "(1-7) : ");
     if (res.equals("1")) {
         res = firstEcran.theChoice("Max time", "(in min): ");

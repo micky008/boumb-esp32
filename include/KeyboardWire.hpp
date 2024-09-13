@@ -18,7 +18,7 @@
 class  KeyboardWire : public Keyboard {
 public:
   void init();
-  void lire();
+  void scan();
 private:
   bool digitalRead(int pin);
 //247 ligne 1

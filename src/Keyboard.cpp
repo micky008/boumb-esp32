@@ -1,15 +1,16 @@
 #include "Keyboard.hpp"
 
-bool Keyboard::isKbBufferHaveEnterPressed = false;
-bool Keyboard::isKbCorrectionPresed = false;
-String Keyboard::kbBufferCode = "";
-
-void Keyboard::resetALLKeyboardState() {
-    Keyboard::isKbBufferHaveEnterPressed = false;
-    Keyboard::isKbCorrectionPresed = false;
-    Keyboard::kbBufferCode = "";
+String Keyboard::lire() {
+    String res = kbBufferCode;
+    fullReset();
+    return res;
 }
 
-void Keyboard::resetCorrectionKeyboardState() {
-    Keyboard::isKbCorrectionPresed = false;
+void Keyboard::fullReset() {
+    Keyboard::etat = KEYBOARD_STATE::IDLE;
+    kbBufferCode = "";
 }
+
+void Keyboard::resetStateOnly() { Keyboard::etat = KEYBOARD_STATE::IDLE; }
+
+String Keyboard::getContent() { return kbBufferCode; }

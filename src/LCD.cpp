@@ -36,7 +36,8 @@ void MyLCD::applyOption(OptionLCD& olcd) {
 void MyLCD::resetLine(int line) {
     internLCD->setCursor(0, line);
     char lineChar[NBCOL];
-    memset(lineChar, ' ', NBCOL);
+    lineChar[NBCOL -1] = '\0';
+    memset(lineChar, ' ', NBCOL - 1);
     internLCD->printstr(lineChar);
     internLCD->setCursor(line, 0);
 }
@@ -44,7 +45,8 @@ void MyLCD::resetLine(int line) {
 void MyLCD::resetLineAfterPosition(int pos, int line) {
     internLCD->setCursor(pos, line);
     char lineChar[NBCOL - pos];
-    memset(lineChar, ' ', NBCOL - pos);
+    lineChar[(NBCOL - pos) -1] = '\0';
+    memset(lineChar, ' ', (NBCOL - pos) -1);
     internLCD->printstr(lineChar);
 }
 

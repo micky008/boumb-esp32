@@ -2,8 +2,8 @@
 #define __PERIPHERIQUE_H__
 
 #include "./Initialisation.hpp"
-#include "./Readable.hpp"
+#include "./Scanable.hpp"
 
-class Peripherique : Initialisation, Readable {};
+class Peripherique : public Initialisation, public Scanable {};
 
 #endif

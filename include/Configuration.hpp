@@ -8,12 +8,13 @@
 
 class Configuration {
    public:
-    Configuration(MyLCD &lcd, Options &opts);
+    Configuration(MyLCD &lcd, Keyboard& kb,Options &opts);
     bool run();
 
    protected:
     MyLCD &lcd;
     Options &options;
+    Keyboard& kb;
 };
 
 #endif

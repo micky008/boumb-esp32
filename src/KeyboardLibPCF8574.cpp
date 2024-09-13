@@ -17,7 +17,10 @@ void KeyboardLibPCF8574::init() {
     keyboardI2C->begin();
 }
 
-void KeyboardLibPCF8574::lire() {
+void KeyboardLibPCF8574::scan() {
+    if (Keyboard::etat == KEYBOARD_STATE::ENTER_PRESSED) {
+        return;
+    }
     for (int x = 0; x < 4; x++) {
         keyboardI2C->digitalWrite(x, HIGH);
         for (int y = 4; y < 8; y++) {
@@ -31,14 +34,13 @@ void KeyboardLibPCF8574::lire() {
                 continue;
             }
             if (mychar == 'E') {
-                Keyboard::isKbBufferHaveEnterPressed = true;
+                Keyboard::etat = KEYBOARD_STATE::ENTER_PRESSED;
                 return;
             } else if (mychar == 'C') {
-                Keyboard::kbBufferCode.remove(Keyboard::kbBufferCode.length() -
-                                              1);
-                Keyboard::isKbCorrectionPresed = true;
+                kbBufferCode.remove(kbBufferCode.length() - 1);
+                Keyboard::etat = KEYBOARD_STATE::DELETE_PRESSED;
             } else {
-                Keyboard::kbBufferCode += mychar;
+                kbBufferCode += mychar;
             }
         }
         keyboardI2C->digitalWrite(x, LOW);

@@ -8,11 +8,12 @@
 
 class Choice {
    public:
-    Choice(MyLCD& lcd);
+    Choice(MyLCD& lcd, Keyboard& keyboard);
     String theChoice(String lineUp, String lineDown);
 
    private:
     MyLCD& lcd;
+    Keyboard& kb;
 };
 
 #endif

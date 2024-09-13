@@ -5,7 +5,7 @@
 
 class ConfigurationDebug : Configuration {
    public:
-    ConfigurationDebug(MyLCD &lcd, Options &opts);
+    ConfigurationDebug(MyLCD &lcd, Keyboard &kb, Options &opts);
     bool run();
 };
 

@@ -12,7 +12,7 @@
 class KeyboardSerial : public Keyboard {
    public:
     void init();
-    void lire();
+    void scan();
 };
 
 #endif

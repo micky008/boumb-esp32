@@ -23,6 +23,7 @@ int restant_time = 0;     // in millis
 int diminue_time = 1000;  // in millis =>  1s
 bool runPlay = false;
 int maxTryRestant = 3;
+unsigned long lastLoop = 0;
 
 TaskHandle_t Task1 = NULL;
 
@@ -42,21 +43,20 @@ void BOOM(bool restart = true) {
 
 void setup() {
     initArduino();
-    // Serial.begin(115200);
     options.init();
     keyboard.init();
     lcd.init();
     led.init();
     bornier.init();
     xTaskCreatePinnedToCore(core0, "core0", 10000, NULL, 0, &Task1, 0);
-    Choice c(lcd);
+    Choice c(lcd, keyboard);
     while (!runPlay) {
         String res = c.theChoice("Jouer ?", "1-oui 2-non: ");
         if (res.equals("2")) {
-            Configuration conf(lcd, options);
+            Configuration conf(lcd, keyboard, options);
             conf.run();
         } else if (res.equals("99")) {
-            ConfigurationDebug conf(lcd, options);
+            ConfigurationDebug conf(lcd, keyboard, options);
             conf.run();
         } else {
             runPlay = true;
@@ -74,24 +74,28 @@ void setup() {
 char temps[NBCOL];
 
 void loop() {
-    memset(temps, 0, NBCOL);
-    int x = restant_time / 1000;
-    int seconds = x % 60;
-    x /= 60;
-    int minutes = x % 60;
-    x /= 60;
-    int hours = x % 24;
-    sprintf(temps, "Temps: %02d:%02d:%02d", hours, minutes, seconds);
-    lcd.affiche(String(temps), LCD_LINE_UP);
-
+    if ((millis() - lastLoop) >= diminue_time) {
+        lastLoop = millis();
+        led.on(restant_time);
+        memset(temps, '\0', NBCOL - 1);
+        int x = restant_time / 1000;
+        int seconds = x % 60;
+        x /= 60;
+        int minutes = x % 60;
+        x /= 60;
+        int hours = x % 24;
+        sprintf(temps, "Temps: %02d:%02d:%02d", hours, minutes, seconds);
+        lcd.affiche(String(temps), LCD_LINE_UP);
+    }
     if (restant_time <= 0) {
+        lcd.affiche(String("Temps: 00:00:00"), LCD_LINE_UP); //enleve un bug graphique
         BOOM();
         return;
     }
     if (bornier.getEtat() != BORNIER_ETAT::ALL_FILS_OK) {
-        Choice c(lcd);
+        Choice c(lcd, keyboard);
         if (bornier.getEtat() == BORNIER_ETAT::GOOD_FIL) {
-            c.theChoice("BOMBE Desactivee", "press keyboard");
+            c.theChoice("BOMBE Desactivee", "press E");
             c.theChoice("remettre fil plz", "press to restart");
             ESP.restart();
         } else {
@@ -101,8 +105,8 @@ void loop() {
         }
     }
     String codeLine = "Code : ";
-    if (!Keyboard::kbBufferCode.isEmpty()) {
-        for (int i = 0; i < Keyboard::kbBufferCode.length(); i++) {
+    if (!keyboard.getContent().isEmpty()) {
+        for (int i = 0; i < keyboard.getContent().length(); i++) {
             codeLine += "*";
         }
     }
@@ -111,25 +115,25 @@ void loop() {
     if (maxTryRestant == 0) {
         BOOM();
     }
-    if (Keyboard::isKbBufferHaveEnterPressed) {
-        if (Keyboard::kbBufferCode.equals(options.getCode())) {
-            Choice c(lcd);
+    if (keyboard.etat == KEYBOARD_STATE::ENTER_PRESSED) {
+        String readCode = keyboard.lire();
+        if (readCode.equals(options.getCode())) {
+            Choice c(lcd, keyboard);
             c.theChoice("BOMBE Desactivee", "press to restart");
             ESP.restart();
         } else {
             maxTryRestant--;
             diminue_time = (1000 * maxTryRestant) / options.getMaxTry();
-            Keyboard::resetALLKeyboardState();
             lcd.resetLine(LCD_LINE_DOWN);
         }
     }
-    if (Keyboard::isKbCorrectionPresed) {
+    if (keyboard.etat == KEYBOARD_STATE::DELETE_PRESSED) {
+        // delete toute la ligne car elle serra re-ecrite a la prochaine
+        // iteration
         lcd.resetLine(LCD_LINE_DOWN);
-        Keyboard::resetCorrectionKeyboardState();
+        keyboard.resetStateOnly();
     }
     led.off();
-    delay(diminue_time);
-    led.on(restant_time);
 }
 
 void core0(void* parameter) {
@@ -144,8 +148,8 @@ void core0(void* parameter) {
                 }
             }
         }
-        bornier.lire();
-        keyboard.lire();
+        bornier.scan();
+        keyboard.scan();
     }
     vTaskDelete(Task1);
 }

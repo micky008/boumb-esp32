@@ -13,7 +13,7 @@ class Bornier : Peripherique {
     Bornier();
     void init();
     void applyOption(OptionBornier& obornier);
-    void lire();
+    void scan();
     BORNIER_ETAT getEtat();
 
    private:

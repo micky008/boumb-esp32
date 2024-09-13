@@ -5,13 +5,23 @@
 
 #include "interfaces/Peripherique.hpp"
 
+enum KEYBOARD_STATE {IDLE, ENTER_PRESSED, DELETE_PRESSED};
+/**
+ * Abstract Keyboard
+ */
 class Keyboard : public Peripherique {
    public:
-    static String kbBufferCode;
-    static bool isKbBufferHaveEnterPressed;
-    static bool isKbCorrectionPresed;
-    static void resetALLKeyboardState();
-    static void resetCorrectionKeyboardState();
+    KEYBOARD_STATE etat;
+    /**
+     * lit le contenu tapper au clavier mais reset également.
+     */
+    String lire();
+    String getContent();
+    /**
+     * reset etat to Idle + clean kbBufferCode
+     */
+    void fullReset();
+    void resetStateOnly();
 
    protected:
     char matrice[4][4] = {{'1', '2', '3', 'F'},
@@ -19,6 +29,7 @@ class Keyboard : public Peripherique {
                           {'7', '8', '9', 'D'},
                           {'A', '0', 'B', 'C'}};
     char rebond;
+    String kbBufferCode;
 };
 
 #endif

@@ -38,6 +38,9 @@ void MyLED::off() {
 }
 
 void MyLED::forceColor(LED_COLOR color) {
+    if (!isOn) {
+        return;
+    }
     pixels->clear();
     for (int i = 0; i < NB_LED; i++) {
         if (color == LED_COLOR::GREEN) {

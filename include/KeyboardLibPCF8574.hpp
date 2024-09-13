@@ -12,7 +12,7 @@ class KeyboardLibPCF8574 : public Keyboard {
     KeyboardLibPCF8574();
     ~KeyboardLibPCF8574();
     void init();
-    void lire();
+    void scan();
 
    private:
     PCF8574* keyboardI2C;

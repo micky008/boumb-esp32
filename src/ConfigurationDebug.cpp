@@ -1,11 +1,11 @@
 #include "ConfigurationDebug.hpp"
 
-ConfigurationDebug::ConfigurationDebug(MyLCD &lcd, Options &opts)
-    : Configuration(lcd, opts) {}
+ConfigurationDebug::ConfigurationDebug(MyLCD &lcd, Keyboard& kb,Options &opts)
+    : Configuration(lcd, kb, opts) {}
 
 bool ConfigurationDebug::run() {
     lcd.clearAllScreen();
-    Choice firstEcran(lcd);
+    Choice firstEcran(lcd, kb);
     String res = firstEcran.theChoice("Num. options", "(1-7) : ");
     if (res.equals("1")) {
         firstEcran.theChoice("Max time Debug",
