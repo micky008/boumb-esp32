@@ -19,7 +19,7 @@ Liste du materiel:
 - un module relais 12v (exemple: https://fr.aliexpress.com/item/1005002983784189.html)
 - Générateur d'impulsions haute tension (12v) ()https://fr.aliexpress.com/item/1005005881098399.html)
 - un abaisseur de tention 12v -> 5v (pour les ws2812b) (https://fr.aliexpress.com/item/1005006777931763.html)
-- baterie d'onduleur 12v
+- baterie d'onduleur 12v (https://fr.aliexpress.com/item/1005007661158562.html)
 
 
 
