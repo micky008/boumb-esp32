@@ -42,8 +42,8 @@ class Options : Initialisation,
     bool isLEDOn();
     void setLedOn(bool onOff);
     int getInitialTime();
-    u_int16_t getMaxTimeInMin();
-    void setMaxTimeInMin(u_int16_t maxtime);
+    uint16_t getMaxTimeInMin();
+    void setMaxTimeInMin(uint16_t maxtime);
     uint8_t getMaxTry();
     void setMaxTry(uint8_t maxTry);
 

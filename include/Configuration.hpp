@@ -13,8 +13,8 @@ class Configuration {
 
    protected:
     MyLCD &lcd;
-    Options &options;
     Keyboard& kb;
+    Options &options;
 };
 
 #endif

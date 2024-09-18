@@ -23,14 +23,14 @@ void Options::saveAllOptions() {
     opts->putBool(OPT_LED_ON_OFF, ledOn);
 }
 
-void Options::setMaxTimeInMin(u_int16_t maxtime) { maxTimeInMin = maxtime; }
+void Options::setMaxTimeInMin(uint16_t maxtime) { maxTimeInMin = maxtime; }
 void Options::setCode(String code) { this->code = code; }
 void Options::setMaxTry(uint8_t maxtry) { this->maxTry = maxtry; }
 void Options::setBrignessOn(bool on) { brignessOnOff = on; }
 void Options::setFil(FIL_BORNIER fil) { this->fil = static_cast<int>(fil); }
 void Options::setLedOn(bool on) { ledOn = on; }
 
-u_int16_t Options::getMaxTimeInMin() { return maxTimeInMin; }
+uint16_t Options::getMaxTimeInMin() { return maxTimeInMin; }
 String Options::getCode() { return code; }
 uint8_t Options::getMaxTry() { return maxTry; }
 FIL_BORNIER Options::getFil() { return FIL_BORNIER(fil); }
